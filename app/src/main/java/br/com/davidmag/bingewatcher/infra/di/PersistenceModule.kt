@@ -23,4 +23,14 @@ class PersistenceModule {
             .fallbackToDestructiveMigration()
             .build()
     }
+
+    @Provides
+    fun provideShowDao(
+        database: LocalDatabase
+    ) = database.getShowDao()
+
+    @Provides
+    fun provideEpisodeDao(
+        database: LocalDatabase
+    ) = database.getEpisodeDao()
 }

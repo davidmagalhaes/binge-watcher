@@ -8,6 +8,12 @@ import retrofit2.http.Query
 interface ShowApi {
 
     @GET("shows")
-    fun listShows(@Query("page") page: Int) : Maybe<@JvmSuppressWildcards List<ShowResponse>>
+    fun list(@Query("page") page: Int) : Maybe<@JvmSuppressWildcards List<ShowResponse>>
+
+    @GET("lookup/shows")
+    fun lookup(@Query("imdb") imdb : String) : Maybe<@JvmSuppressWildcards ShowResponse>
+
+    @GET("search/shows")
+    fun search(@Query("q") query : String) : Maybe<@JvmSuppressWildcards List<ShowResponse>>
 
 }

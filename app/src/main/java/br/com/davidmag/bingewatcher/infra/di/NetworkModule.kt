@@ -1,6 +1,7 @@
 package br.com.davidmag.bingewatcher.infra.di
 
 import br.com.davidmag.bingewatcher.app.BuildConfig
+import br.com.davidmag.bingewatcher.data.source.remote.api.EpisodeApi
 import br.com.davidmag.bingewatcher.data.source.remote.api.ShowApi
 import br.com.davidmag.bingewatcher.data.util.GsonDateTimeTypeAdapter
 import br.com.davidmag.bingewatcher.data.util.GsonSimpleDateTypeAdapter
@@ -30,10 +31,12 @@ class NetworkModule {
             .readTimeout(BuildConfig.NETWORK_TIMEOUT, TimeUnit.SECONDS)
             .connectTimeout(BuildConfig.NETWORK_TIMEOUT, TimeUnit.SECONDS)
             .writeTimeout(BuildConfig.NETWORK_TIMEOUT, TimeUnit.SECONDS)
-            .addNetworkInterceptor(StethoInterceptor())
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
+            .let {
+                if (BuildConfig.DEBUG) it.addNetworkInterceptor(StethoInterceptor()) else it
+            }
             .build()
     }
 
@@ -62,5 +65,10 @@ class NetworkModule {
     @Provides
     fun provideShowApi() : ShowApi =
         retrofit.create(ShowApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideEpisodeApi() : EpisodeApi =
+        retrofit.create(EpisodeApi::class.java)
 
 }

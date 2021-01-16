@@ -5,8 +5,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class ShowDb {
-    @PrimaryKey(autoGenerate = true)
+data class ShowDb (
+    @PrimaryKey
     @ColumnInfo(name = "_show_id")
-    var id : Long? = null
-}
+    val id : Long,
+    val name : String,
+    val time : String,
+    val days : List<String>,
+    val originalImage : String?,
+    val mediumImage : String?,
+    val genres : List<String>,
+    val summary : String
+)

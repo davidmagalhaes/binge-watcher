@@ -27,5 +27,7 @@ interface ApplicationComponent {
         fun applicationBind(application: Application): Builder
     }
 
+    fun okHttpUrlLoaderFactory() : OkHttpUrlLoader.Factory
+
     fun inject(application : App)
 }
