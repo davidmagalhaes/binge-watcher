@@ -30,6 +30,11 @@ class PersistenceModule {
     ) = database.getShowDao()
 
     @Provides
+    fun provideFavoritedShowDao(
+        database: LocalDatabase
+    ) = database.getFavoritedShowDao()
+
+    @Provides
     fun provideEpisodeDao(
         database: LocalDatabase
     ) = database.getEpisodeDao()

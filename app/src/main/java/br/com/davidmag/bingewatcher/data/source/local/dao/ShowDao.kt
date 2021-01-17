@@ -10,10 +10,11 @@ import io.reactivex.Maybe
 
 @Dao
 interface ShowDao : BaseDao<ShowDb> {
+
 	@Query("SELECT * FROM ShowDb ORDER BY name")
 	fun get() : DataSource.Factory<Int, ShowDb>
 
-	@Query("SELECT * FROM ShowDb LEFT JOIN EpisodeDb ON (ShowDb._show_id = EpisodeDb.episode_show_id) WHERE ShowDb._show_id = :showId")
+	@Query("SELECT * FROM ShowDb NATURAL JOIN FavoritedShowDb LEFT JOIN EpisodeDb ON (ShowDb._show_id = EpisodeDb.episode_show_id) WHERE ShowDb._show_id = :showId")
 	fun get(showId : Long) : Maybe<ShowWithEpisodes>
 
 	@Transaction
@@ -22,6 +23,6 @@ interface ShowDao : BaseDao<ShowDb> {
 		insertSync(*shows)
 	}
 
-	@Query("DELETE FROM ShowDb")
+	@Query("DELETE FROM ShowDb WHERE _show_id")
 	fun deleteAll() : Int
 }

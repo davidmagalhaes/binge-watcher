@@ -3,6 +3,7 @@
     package="br.com.davidmag.bingewatcher.app">
 
     <application
+        android:name="br.com.davidmag.bingewatcher.infra.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
