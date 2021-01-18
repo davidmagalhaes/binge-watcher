@@ -6,12 +6,6 @@
     do a `git checkout` to the branch `development` and run it using Android Studio on either a 
     smartphone or an Android emulator.
 
-#### Things to improve
-
-- Adding Unit Tests
-- Some UX/UI improvements
-- Adding infinite scrolling for the episodes too
-
 #### Stack
 
 - MVVM
@@ -38,3 +32,9 @@
 #### Bonus
 
 - Favorites
+
+#### Things to improve
+
+- Adding Unit Tests
+- Some UX/UI improvements
+- Adding infinite scrolling for the episodes too
