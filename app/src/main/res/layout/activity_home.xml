@@ -72,7 +72,6 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:spanCount="1"
             tools:listitem="@layout/viewholder_show" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

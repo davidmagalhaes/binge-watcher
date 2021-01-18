@@ -3,6 +3,7 @@ package br.com.davidmag.bingewatcher.presentation.di
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import br.com.davidmag.bingewatcher.infra.App
+import br.com.davidmag.bingewatcher.presentation.common.PresentationMapper
 
 import com.bumptech.glide.module.AppGlideModule
 
@@ -22,6 +23,10 @@ val Fragment.presentationComponent by lazy {
 }
 
 val AppGlideModule.presentationComponent by lazy {
+    presentationComponent
+}
+
+val <T, V> PresentationMapper<T, V>.presentationComponent by lazy {
     presentationComponent
 }
 

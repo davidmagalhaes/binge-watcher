@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import br.com.davidmag.bingewatcher.data.source.remote.dto.Posters
+import org.threeten.bp.LocalDate
 
 @Entity
 data class EpisodeDb (
@@ -16,6 +17,7 @@ data class EpisodeDb (
     val season : Int,
     val number : Int,
     val summary : String,
+    val premiered : LocalDate?,
     val imageOriginalUrl : String? = null,
     val imageMediumUrl : String? = null
 )

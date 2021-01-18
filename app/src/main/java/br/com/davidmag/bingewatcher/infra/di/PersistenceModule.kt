@@ -2,6 +2,9 @@ package br.com.davidmag.bingewatcher.infra.di
 
 import android.app.Application
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import br.com.davidmag.bingewatcher.data.scheduler.AppSchedulers
+import br.com.davidmag.bingewatcher.data.scheduler.AppSchedulersImpl
 import br.com.davidmag.bingewatcher.data.source.local.LocalDatabase
 import dagger.Module
 import dagger.Provides
@@ -21,8 +24,13 @@ class PersistenceModule {
                 "bingewatcher.db"
             )
             .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
             .build()
     }
+
+    @Provides
+    fun provideAppSchedulers() =
+        AppSchedulersImpl as AppSchedulers
 
     @Provides
     fun provideShowDao(

@@ -5,6 +5,7 @@ import br.com.davidmag.bingewatcher.app.BuildConfig
 import br.com.davidmag.bingewatcher.infra.di.ApplicationComponent
 import br.com.davidmag.bingewatcher.infra.di.DaggerApplicationComponent
 import com.facebook.stetho.Stetho
+import com.jakewharton.threetenabp.AndroidThreeTen
 import io.reactivex.plugins.RxJavaPlugins
 import timber.log.Timber
 
@@ -15,6 +16,8 @@ class App  : Application() {
     }
 
     override fun onCreate() {
+        AndroidThreeTen.init(this)
+
         if(BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
 

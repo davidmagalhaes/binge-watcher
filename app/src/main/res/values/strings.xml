@@ -2,4 +2,11 @@
     <string name="app_name">app</string>
     <string name="ui_home_menu_search">Search shows</string>
     <string name="ui_home_menu_search_hint">Search shows</string>
+    <string name="show_premiered_format">MMMM, dd, yyyy</string>
+    <string name="generic_fatal_error">A fatal error occured: %s</string>
+    <string name="mock_show_time_days">07:00 - Monday, Tuesday</string>
+    <string name="episode_subtitle_format">S%d E%d - %s</string>
+    <string name="show_subtitle_format">%s - %s</string>
+    <string name="episode_season_list_format">Season %d</string>
+    <string name="episode_number_separator">.</string>
 </resources>

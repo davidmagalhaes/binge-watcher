@@ -11,6 +11,7 @@ import timber.log.Timber
 
 object PresentationUtils {
 
+    @Suppress("NULLABLE_TYPE_PARAMETER_AGAINST_NOT_NULL_TYPE_PARAMETER")
     fun <T> wrap(
         flowable: Flowable<T>,
         mediator: MediatorLiveData<PresentationObject>,
@@ -48,16 +49,18 @@ object PresentationUtils {
         }
     }
 
-    fun wrapSubmit(
+    fun submit(
         maybe: Maybe<Any>,
-        mediator: MediatorLiveData<PresentationObject>,
-        mediatorFailure: MediatorLiveData<ExceptionWrapper>? = null
-    ) = wrap(
-        maybe.toFlowable(),
-        mediator,
-        mediatorFailure,
-        true
-    )
+        mediator : MediatorLiveData<PresentationObject>,
+        mediatorFailure: MediatorLiveData<ExceptionWrapper>?
+    ) {
+        wrap(
+            maybe.toFlowable(),
+            mediator,
+            mediatorFailure,
+            true
+        )
+    }
 
     fun launchOn(
         maybe: Maybe<Any>,
@@ -69,7 +72,7 @@ object PresentationUtils {
             mediatorFailure.removeSource(mediat)
         }
 
-        wrapSubmit(maybe, mediat, mediatorFailure)
+        wrap(maybe.toFlowable(), mediat, mediatorFailure, true)
     }
 
     fun <T> toLiveData(
@@ -95,6 +98,6 @@ object PresentationUtils {
             }
         }
 
-        return mediator ?: source
+        return source
     }
 }

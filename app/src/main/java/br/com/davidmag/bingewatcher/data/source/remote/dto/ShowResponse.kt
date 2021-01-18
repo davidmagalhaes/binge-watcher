@@ -1,13 +1,17 @@
 package br.com.davidmag.bingewatcher.data.source.remote.dto
 
+import org.threeten.bp.LocalDate
+
 data class ShowResponse (
     val id : Long,
     val name : String,
-    val images : Posters,
-    val schedule : ShowSchedule,
+    val image : Posters?,
+    val schedule : ShowSchedule?,
     val genres : List<String>,
-    val summary : String,
-    val externals : OtherIdentifiers
+    val summary : String?,
+    val status : String,
+    val rating : ShowRating,
+    val premiered : LocalDate?
 )
 
 data class ShowSchedule(
@@ -15,6 +19,6 @@ data class ShowSchedule(
     val days : List<String>
 )
 
-data class OtherIdentifiers(
-    val imdb : String
+data class ShowRating (
+    val average : Double
 )
