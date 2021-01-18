@@ -2,7 +2,9 @@
     An app to get information about series and its episodes. At first, aimed only on tv shows, but who knows what comes next?
 
 #### How to install
-    The project uses Android Studio 4.1.1 and can be cloned easily from this repository. After cloning, do a `git checkout` to the branch `development` and run it using Android Studio on either a smartphone or an Android emulator.
+    The project uses Android Studio 4.1.1 and can be cloned easily from this repository. After cloning, 
+    do a `git checkout` to the branch `development` and run it using Android Studio on either a 
+    smartphone or an Android emulator.
 
 #### Things to improve
 
