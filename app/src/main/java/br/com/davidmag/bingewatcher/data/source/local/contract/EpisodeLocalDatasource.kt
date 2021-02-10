@@ -5,6 +5,7 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 
 interface EpisodeLocalDatasource {
-    fun get(showId : Long, season : Int) : Flowable<List<Episode>>
+    fun get(showId : Long) : Flowable<List<Episode>>
     fun append(episodes : List<Episode>) : Maybe<Any>
+    fun cache(episodes : List<Episode>) : Maybe<Any>
 }

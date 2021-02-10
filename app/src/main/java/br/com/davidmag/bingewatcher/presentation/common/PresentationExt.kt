@@ -17,19 +17,23 @@ inline fun <reified T: ViewModel> Fragment.initViewModel(crossinline factory: ()
     _initViewModel(this, arguments, factory)
 
 fun Context.longToast(message : String?) {
-    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    Toast.makeText(this, message.orEmpty(), Toast.LENGTH_LONG).show()
 }
 
-fun Context.getString(messageRes : Int?, vararg args : Any) : String? {
-    return messageRes?.let { getString(it, args) }
+fun Context.getString(messageRes : Int?, vararg args : Any?) : String? {
+    return messageRes?.let { getString(it, *args) }
 }
 
-fun Context.handleException(wrapper : ExceptionWrapper){
-    Timber.e(wrapper.exception)
-    longToast(getString(
+fun Context.getString(wrapper : ExceptionWrapper) : String? {
+    return getString(
         wrapper.errorMessage,
-        wrapper.errorArgs.toTypedArray()
-    ))
+        *wrapper.errorArgs.toTypedArray()
+    ) ?: wrapper.exception.message
+}
+
+fun <T : Collection<*>> T.ifNotEmpty(block : (T) -> Unit) : T {
+    if(isNotEmpty()) block(this)
+    return this
 }
 
 inline fun <reified T: ViewModel> _initViewModel(
@@ -55,13 +59,15 @@ inline fun <reified T: ViewModel> _initViewModel(
 @Suppress("UNCHECKED_CAST")
 fun Maybe<*>.submit(
     mediator : MediatorLiveData<PresentationObject>,
-    mediatorFailure: MediatorLiveData<ExceptionWrapper>? = null
-) = PresentationUtils.submit(this as Maybe<Any>, mediator, mediatorFailure)
+    mediatorFailure: MediatorLiveData<ExceptionWrapper>? = null,
+    exceptionHandler : (Throwable) -> ExceptionWrapper = { ExceptionWrapper(it) }
+) = PresentationUtils.submit(this as Maybe<Any>, mediator, mediatorFailure, exceptionHandler)
 
 @Suppress("UNCHECKED_CAST")
 fun Maybe<*>.launchOn(
-    mediatorFailure: MediatorLiveData<ExceptionWrapper>
-) = PresentationUtils.launchOn(this as Maybe<Any>, mediatorFailure)
+    mediatorFailure: MediatorLiveData<ExceptionWrapper>,
+    exceptionHandler : (Throwable) -> ExceptionWrapper = { ExceptionWrapper(it) }
+) = PresentationUtils.launchOn(this as Maybe<Any>, mediatorFailure, exceptionHandler)
 
 fun <Entity , Dto: PresentationObject> Flowable<List<Entity>>.toPresentation(mapper : PresentationMapper<Entity, Dto>) : Flowable<List<Dto>> {
     return this.map(mapper.contentMapper).onErrorReturn { listOf(mapper.errorMapper(it)) }

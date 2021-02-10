@@ -45,4 +45,10 @@ class UseCaseModule {
     fun provideGetEpisodesUseCase(
         episodeRepository: EpisodeRepository
     ) = GetEpisodesUseCase(episodeRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetShowByIdUseCase(
+        showRepository: ShowRepository
+    ) = GetShowByIdUseCase(showRepository)
 }

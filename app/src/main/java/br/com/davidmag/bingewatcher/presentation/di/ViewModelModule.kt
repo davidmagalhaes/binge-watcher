@@ -26,6 +26,7 @@ class ViewModelModule {
     fun provideShowViewModel(
         showPresentationMapper: ShowPresentationMapper,
         episodePresentationMapper: EpisodePresentationMapper,
+        getShowByIdUseCase : GetShowByIdUseCase,
         lookupShowUseCase: LookupShowUseCase,
         favoriteShowUseCase: FavoriteShowUseCase,
         fetchEpisodesUseCase: FetchEpisodesUseCase,
@@ -33,6 +34,7 @@ class ViewModelModule {
     ) = ShowViewModel(
         showPresentationMapper,
         episodePresentationMapper,
+        getShowByIdUseCase,
         lookupShowUseCase,
         favoriteShowUseCase,
         fetchEpisodesUseCase,

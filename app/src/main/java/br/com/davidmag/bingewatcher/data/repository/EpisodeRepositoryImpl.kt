@@ -13,16 +13,16 @@ class EpisodeRepositoryImpl(
     private val episodeRemoteDatasource: EpisodeRemoteDatasource,
     private val episodeLocalDatasource : EpisodeLocalDatasource
 ) : EpisodeRepository {
-    override fun get(showId: Long, season : Int): Flowable<List<Episode>> {
-        return episodeLocalDatasource.get(showId, season)
+    override fun get(showId: Long): Flowable<List<Episode>> {
+        return episodeLocalDatasource.get(showId)
             .subscribeOn(appSchedulers.network())
     }
 
-    override fun fetch(showId: Long): Maybe<Any> {
-        return episodeRemoteDatasource.fetch(showId)
+    override fun fetch(showId: Long, seasonId : Long): Maybe<Any> {
+        return episodeRemoteDatasource.fetch(showId, seasonId)
             .subscribeOn(appSchedulers.network())
             .flatMap {
-                episodeLocalDatasource.append(it)
+                episodeLocalDatasource.cache(it)
                     .subscribeOn(appSchedulers.database())
             }
     }

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.RecyclerView
 import br.com.davidmag.bingewatcher.app.databinding.ActivityHomeBinding
 import br.com.davidmag.bingewatcher.presentation.adapter.ShowAdapter
 import br.com.davidmag.bingewatcher.presentation.common.decorator.VerticalSpaceItemDecoration
@@ -16,6 +17,11 @@ import br.com.davidmag.bingewatcher.presentation.viewmodel.ShowViewModel
 import javax.inject.Inject
 
 class HomeActivity : AppCompatActivity() {
+
+	companion object {
+		const val VIEW_CONTENT = 0
+		const val VIEW_LOADING = 1
+	}
 
 	@Inject
 	lateinit var viewModel : HomeViewModel
@@ -48,9 +54,17 @@ class HomeActivity : AppCompatActivity() {
 		viewModel.updateShows()
 
 		with(views) {
+			contentFlipper.displayedChild = VIEW_LOADING
+
 			swiper.setOnRefreshListener {
 				viewModel.updateShows()
 			}
+
+			adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+				override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+					contentFlipper.displayedChild = VIEW_CONTENT
+				}
+			})
 
 			homeRecycler.adapter = adapter
 			homeRecycler.addItemDecoration(VerticalSpaceItemDecoration(
@@ -86,10 +100,7 @@ class HomeActivity : AppCompatActivity() {
 			}
 
 			viewModel.errors.observe(this@HomeActivity){ exception ->
-				longToast(getString(
-					exception.errorMessage,
-					exception.errorArgs.toTypedArray()
-				))
+				longToast(getString(exception))
 			}
 
 			viewModel.shows.observe(this@HomeActivity){

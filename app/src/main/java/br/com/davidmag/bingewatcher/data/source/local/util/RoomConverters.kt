@@ -61,4 +61,11 @@ object RoomConverters {
     fun toStringList(string: String?): List<String>? {
         return gson.fromJson(string, List::class.java) as List<String>
     }
+
+    @TypeConverter
+    @JvmStatic
+    @Suppress("UNCHECKED_CAST")
+    fun toLongList(string: String?): List<Long>? {
+        return gson.fromJson(string, List::class.java) as List<Long>
+    }
 }

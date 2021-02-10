@@ -18,7 +18,10 @@ object ShowLocalMapper : EntityMapper<Show, ShowDb> {
                 summary = summary,
                 status = status,
                 ratingAvg = ratingAvg,
-                premiered = premiered
+                premiered = premiered,
+                backgroundImage = imageBackgroundUrl,
+                seasonsIds = seasonsIds,
+                imageList = images
             )
         }
     }
@@ -36,7 +39,10 @@ object ShowLocalMapper : EntityMapper<Show, ShowDb> {
                 summary = summary,
                 status = status,
                 ratingAvg = ratingAvg,
-                premiered = premiered
+                premiered = premiered,
+                imageBackgroundUrl = backgroundImage,
+                images = imageList,
+                seasonsIds = seasonsIds
             )
         }
     }

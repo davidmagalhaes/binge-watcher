@@ -7,7 +7,7 @@ import br.com.davidmag.bingewatcher.domain.model.Show
 
 object EpisodeRemoteMapper : EntityMapper<Episode, EpisodeResponse> {
     override val toDtoMapper: (Episode) -> EpisodeResponse
-        get() = TODO("Not yet implemented")
+        get() = error("Not implemented")
 
     override val toEntityMapper: (EpisodeResponse) -> Episode = { episodeResponse ->
         with(episodeResponse) {

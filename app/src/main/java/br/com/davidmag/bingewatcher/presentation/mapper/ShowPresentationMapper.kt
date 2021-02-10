@@ -1,6 +1,7 @@
 package br.com.davidmag.bingewatcher.presentation.mapper
 
 import android.content.res.Resources
+import androidx.core.text.HtmlCompat
 import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.domain.model.Show
 import br.com.davidmag.bingewatcher.presentation.common.PresentationMapper
@@ -22,9 +23,13 @@ class ShowPresentationMapper(
                     time = time,
                     days = days,
                     genres = genres,
-                    summary = summary,
+                    summary = HtmlCompat.fromHtml(
+                        summary,
+                        HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_BLOCKQUOTE
+                    ),
                     originalImage = imageOriginalUrl,
                     mediumImage = imageMediumUrl,
+                    backgroundImage = imageBackgroundUrl,
                     status = status,
                     ratingAvg = ratingAvg.toFloat() / 2,
                     premiered = premiered?.format(DateTimeFormatter.ofPattern(
@@ -33,14 +38,16 @@ class ShowPresentationMapper(
                     subtitle = resources.getString(
                         R.string.show_subtitle_format,
                         time,
-                        days.joinToString()
+                        days.joinToString { each -> each.take(3) }
                     ),
-                    seasonsTitles = (1..seasonsCount).map { season ->
+                    favored = favored,
+                    seasonsTitles = (1..seasonsIds.size).map { season ->
                         resources.getString(
                             R.string.episode_season_list_format,
                             season
                         )
-                    }
+                    },
+                    seasonsIds = seasonsIds
                 )
             }
         }

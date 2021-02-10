@@ -8,7 +8,6 @@ object ShowWithJoinsMapper : EntityMapper<Show, ShowWithJoins> {
     override val toEntityMapper: (ShowWithJoins) -> Show = {
          ShowLocalMapper.toEntity(it.show).apply {
              favored = it.favored
-             seasonsCount = it.seasonCount
          }
     }
 

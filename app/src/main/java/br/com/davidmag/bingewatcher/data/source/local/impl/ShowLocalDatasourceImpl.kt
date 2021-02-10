@@ -6,6 +6,7 @@ import br.com.davidmag.bingewatcher.data.source.local.dao.ShowDao
 import br.com.davidmag.bingewatcher.data.source.local.mapper.ShowLocalMapper
 import br.com.davidmag.bingewatcher.data.source.local.mapper.ShowWithJoinsMapper
 import br.com.davidmag.bingewatcher.domain.model.Show
+import io.reactivex.Flowable
 import io.reactivex.Maybe
 
 class ShowLocalDatasourceImpl(
@@ -17,7 +18,7 @@ class ShowLocalDatasourceImpl(
        }
     }
 
-    override fun lookup(showId: Long): Maybe<List<Show>> {
+    override fun get(showId: Long): Flowable<List<Show>> {
         return showDao.get(showId).map {
             ShowWithJoinsMapper.toEntity(it)
         }

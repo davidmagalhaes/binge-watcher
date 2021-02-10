@@ -17,7 +17,7 @@ class SearchShowUseCase(
 class LookupShowUseCase(
     private val showRepository: ShowRepository
 ) {
-    fun execute(showId : Long) : Maybe<List<Show>> {
+    fun execute(showId : Long) : Maybe<Any> {
         return showRepository.lookup(showId)
     }
 }
@@ -27,6 +27,14 @@ class GetShowUseCase(
 ) {
     fun execute(query : String = "%%", favoritesOnly : Boolean) : Flowable<PagingData<Show>> {
         return showRepository.get(query, favoritesOnly)
+    }
+}
+
+class GetShowByIdUseCase(
+    private val showRepository: ShowRepository
+) {
+    fun execute(showId : Long) : Flowable<List<Show>> {
+        return showRepository.get(showId)
     }
 }
 

@@ -3,8 +3,10 @@ package br.com.davidmag.bingewatcher.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.map
+import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.domain.usecase.GetShowUseCase
 import br.com.davidmag.bingewatcher.domain.usecase.SearchShowUseCase
 import br.com.davidmag.bingewatcher.presentation.common.BaseViewModel
@@ -42,14 +44,21 @@ class HomeViewModel(
                 pagingData.map {
                     showPresentationMapper.parse(it).first()
                 }
-            }.toLiveData(shows)
+            }
+            .toLiveData(shows)
     }
 
     fun submitSearch(query: String) {
         this.query.value = query
 
         searchShowUseCase.execute(query)
-            .launchOn(errors)
+            .launchOn(errors) {
+                ExceptionWrapper(
+                    exception = it,
+                    errorMessage = R.string.generic_error,
+                    errorArgs = listOf(it.message)
+                )
+            }
 
         updateShows()
     }
@@ -62,11 +71,9 @@ class HomeViewModel(
     }
 
     fun showFavoritesClick(){
-        if(favoriteState.value == FAVORITE_STATE_ENABLED){
-            favoriteState.value = (FAVORITE_STATE_DISABLED)
-        }
-        else{
-            favoriteState.value = (FAVORITE_STATE_ENABLED)
+        favoriteState.value = when(favoriteState.value){
+            FAVORITE_STATE_ENABLED -> FAVORITE_STATE_DISABLED
+            else -> FAVORITE_STATE_ENABLED
         }
 
         updateShows()

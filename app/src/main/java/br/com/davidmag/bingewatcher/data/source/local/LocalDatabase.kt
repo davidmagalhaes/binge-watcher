@@ -17,7 +17,7 @@ import br.com.davidmag.bingewatcher.data.source.local.util.RoomConverters
         FavoredShowDb::class,
         EpisodeDb::class
     ],
-    version = 6,
+    version = 9,
     exportSchema = true
 )
 @TypeConverters(RoomConverters::class)

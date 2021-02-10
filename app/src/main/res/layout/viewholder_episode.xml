@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="250dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/textColorSecondary"
+        android:layout_marginHorizontal="@dimen/default_margin"
         android:textSize="@dimen/small_text_size"
         tools:text="@tools:sample/lorem" />
 
@@ -27,6 +28,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/textColorPrimary"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginHorizontal="@dimen/default_margin"
         android:textSize="@dimen/large_text_size"
         tools:text="@tools:sample/lorem" />
 
@@ -35,6 +38,7 @@
         android:maxLines="3"
         android:ellipsize="end"
         android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginHorizontal="@dimen/default_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/small_text_size"

@@ -8,15 +8,15 @@ import io.reactivex.Maybe
 class FetchEpisodesUseCase(
     private val episodeRepository: EpisodeRepository
 ) {
-    fun execute(showId : Long) : Maybe<Any> {
-        return episodeRepository.fetch(showId)
+    fun execute(showId : Long, season : Long) : Maybe<Any> {
+        return episodeRepository.fetch(showId, season)
     }
 }
 
 class GetEpisodesUseCase(
     private val episodeRepository: EpisodeRepository
 ) {
-    fun execute(showId : Long, season : Int) : Flowable<List<Episode>> {
-        return episodeRepository.get(showId, season)
+    fun execute(showId : Long) : Flowable<List<Episode>> {
+        return episodeRepository.get(showId)
     }
 }

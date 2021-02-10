@@ -4,13 +4,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import br.com.davidmag.bingewatcher.GlideApp
 import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.app.databinding.ViewholderShowBinding
+import br.com.davidmag.bingewatcher.presentation.common.decorator.HorizontalSpaceItemDecoration
 import br.com.davidmag.bingewatcher.presentation.model.ShowPresentation
 
 class ShowAdapter (
@@ -19,6 +19,7 @@ class ShowAdapter (
 ) : PagingDataAdapter<ShowPresentation, ShowViewHolder>(NewsDiffCallback) {
 
     private val layoutInflater = LayoutInflater.from(context)
+    private val resources = context.resources
 
     companion object {
         val NewsDiffCallback = object : DiffUtil.ItemCallback<ShowPresentation>() {
@@ -39,10 +40,13 @@ class ShowAdapter (
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowViewHolder {
-        return ShowViewHolder(
-            layoutInflater.inflate(R.layout.viewholder_show, parent, false),
-            clickListener
+        val views = ViewholderShowBinding.inflate(layoutInflater, parent, false)
+
+        views.showGenres.addItemDecoration(
+            HorizontalSpaceItemDecoration(resources, R.dimen.small_margin)
         )
+
+        return ShowViewHolder(views.root, clickListener)
     }
 
     override fun onBindViewHolder(holder: ShowViewHolder, position: Int) {

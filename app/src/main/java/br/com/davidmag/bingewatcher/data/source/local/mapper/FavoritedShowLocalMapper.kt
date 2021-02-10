@@ -19,7 +19,10 @@ object FavoritedShowLocalMapper : EntityMapper<Show, FavoredShowDb> {
                 summary = summary,
                 status = status,
                 premiered = premiered,
-                ratingAvg = ratingAvg
+                ratingAvg = ratingAvg,
+                backgroundImage = imageBackgroundUrl,
+                imageList = images,
+                seasonsIds = seasonsIds
             ))
         }
     }
@@ -37,7 +40,10 @@ object FavoritedShowLocalMapper : EntityMapper<Show, FavoredShowDb> {
                 summary = summary,
                 status = status,
                 premiered = premiered,
-                ratingAvg = ratingAvg
+                ratingAvg = ratingAvg,
+                imageBackgroundUrl = backgroundImage,
+                images = imageList,
+                seasonsIds = it.show.seasonsIds
             )
         }
     }

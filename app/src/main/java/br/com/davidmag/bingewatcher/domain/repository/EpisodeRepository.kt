@@ -5,6 +5,6 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 
 interface EpisodeRepository {
-    fun get(showId : Long, season : Int) : Flowable<List<Episode>>
-    fun fetch(showId : Long) : Maybe<Any>
+    fun get(showId : Long) : Flowable<List<Episode>>
+    fun fetch(showId : Long, seasonId : Long) : Maybe<Any>
 }

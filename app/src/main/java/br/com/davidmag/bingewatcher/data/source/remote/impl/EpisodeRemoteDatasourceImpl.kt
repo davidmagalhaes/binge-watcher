@@ -9,8 +9,8 @@ import io.reactivex.Maybe
 class EpisodeRemoteDatasourceImpl(
     private val episodeApi: EpisodeApi
 ) : EpisodeRemoteDatasource {
-    override fun fetch(showId: Long): Maybe<List<Episode>> {
-        return episodeApi.fetch(showId).map { responseList ->
+    override fun fetch(showId : Long, seasonId: Long): Maybe<List<Episode>> {
+        return episodeApi.fetch(seasonId).map { responseList ->
             EpisodeRemoteMapper.toEntity(responseList).onEach {
                 it.showId = showId
             }

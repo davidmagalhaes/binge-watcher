@@ -16,7 +16,8 @@ object PresentationUtils {
         flowable: Flowable<T>,
         mediator: MediatorLiveData<PresentationObject>,
         mediatorFailure: MutableLiveData<ExceptionWrapper>? = null,
-        removeAfterFirst: Boolean = false
+        removeAfterFirst: Boolean = false,
+        exceptionHandler : (Throwable) -> ExceptionWrapper = { ExceptionWrapper(it) }
     ) {
         val source = toLiveData(
             flowable.observeOn(AndroidSchedulers.mainThread())
@@ -29,10 +30,7 @@ object PresentationUtils {
                 }
                 .onErrorReturn {
                     Timber.e(it)
-                    ExceptionWrapper(
-                        PresentationObject.VIEWTYPE_ERROR,
-                        exception = it
-                    )
+                    exceptionHandler(it)
                 }
                 .map {
                     if(it is ExceptionWrapper && mediatorFailure != null){
@@ -52,19 +50,22 @@ object PresentationUtils {
     fun submit(
         maybe: Maybe<Any>,
         mediator : MediatorLiveData<PresentationObject>,
-        mediatorFailure: MediatorLiveData<ExceptionWrapper>?
+        mediatorFailure: MediatorLiveData<ExceptionWrapper>?,
+        exceptionHandler : (Throwable) -> ExceptionWrapper = { ExceptionWrapper(it) }
     ) {
         wrap(
             maybe.toFlowable(),
             mediator,
             mediatorFailure,
-            true
+            true,
+            exceptionHandler
         )
     }
 
     fun launchOn(
         maybe: Maybe<Any>,
-        mediatorFailure: MediatorLiveData<ExceptionWrapper>
+        mediatorFailure: MediatorLiveData<ExceptionWrapper>,
+        exceptionHandler : (Throwable) -> ExceptionWrapper = { ExceptionWrapper(it) }
     ) {
         val mediat = MediatorLiveData<PresentationObject>()
 
@@ -72,7 +73,13 @@ object PresentationUtils {
             mediatorFailure.removeSource(mediat)
         }
 
-        wrap(maybe.toFlowable(), mediat, mediatorFailure, true)
+        wrap(
+            maybe.toFlowable(),
+            mediat,
+            mediatorFailure,
+            true,
+            exceptionHandler
+        )
     }
 
     fun <T> toLiveData(

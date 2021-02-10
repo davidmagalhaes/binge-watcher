@@ -15,6 +15,8 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.rx2.await
+import retrofit2.HttpException
+import java.net.HttpURLConnection
 
 class ShowRepositoryImpl(
     private val appSchedulers: AppSchedulers,
@@ -23,18 +25,21 @@ class ShowRepositoryImpl(
     private val showRemoteDatasource: ShowRemoteDatasource
 ) : ShowRepository {
     override fun favorite(showId: Long, favorite: Boolean): Maybe<Any> {
-        return showLocalDatasource.lookup(showId)
+        return showLocalDatasource.get(showId)
             .subscribeOn(appSchedulers.database())
+            .firstElement()
             .flatMap {
                 if(it.isNotEmpty()){
                     val show = it.first()
                     if(favorite)
                         favoredShowLocalDatasource.upsert(show)
+                            .subscribeOn(appSchedulers.database())
                     else
                         favoredShowLocalDatasource.delete(show)
+                            .subscribeOn(appSchedulers.database())
                 }
                 else{
-                    throw EntityNotFoundException("showId: $showId")
+                    throw EntityNotFoundException("Show with id: $showId")
                 }
             }
     }
@@ -49,8 +54,8 @@ class ShowRepositoryImpl(
             PagingConfig(
                 pageSize = pageSize,
                 enablePlaceholders = false,
-                prefetchDistance = 5,
-                initialLoadSize = 10
+                prefetchDistance = 10,
+                initialLoadSize = pageSize
             ),
             1,
             IntRemoteMediator {
@@ -59,20 +64,34 @@ class ShowRepositoryImpl(
                     .flatMap { shows ->
                         showLocalDatasource.append(shows).map { shows }
                     }
+                    .onErrorReturn { e ->
+                        if(e is HttpException && e.code() == HttpURLConnection.HTTP_NOT_FOUND)
+                            emptyList()
+                        else
+                            throw e
+                    }
                     .await()
 
                 RemoteMediator.MediatorResult.Success(
                     endOfPaginationReached = shows.orEmpty().isEmpty()
                 )
             },
-            (if(favorite) favoredShowLocalDatasource.get(query) else showLocalDatasource.get(query))
-                .asPagingSourceFactory(),
+            (if(favorite) favoredShowLocalDatasource.get(query)
+                else showLocalDatasource.get(query)).asPagingSourceFactory(),
         ).flowable.cachedIn(GlobalScope)
     }
 
-    override fun lookup(showId: Long): Maybe<List<Show>> {
-        return showLocalDatasource.lookup(showId)
+    override fun get(showId: Long): Flowable<List<Show>> {
+        return showLocalDatasource.get(showId)
             .subscribeOn(appSchedulers.database())
+    }
+
+    override fun lookup(showId: Long): Maybe<Any> {
+        return showRemoteDatasource.lookup(showId)
+            .subscribeOn(appSchedulers.network())
+            .flatMap {
+                showLocalDatasource.append(it)
+            }
     }
 
     override fun fetch(page: Int): Maybe<Any> {

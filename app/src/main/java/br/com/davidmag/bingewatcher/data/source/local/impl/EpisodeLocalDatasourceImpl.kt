@@ -11,8 +11,8 @@ import io.reactivex.Maybe
 class EpisodeLocalDatasourceImpl(
     private val episodeDao: EpisodeDao
 ) : EpisodeLocalDatasource {
-    override fun get(showId : Long, season : Int): Flowable<List<Episode>> {
-        return episodeDao.get(showId, season).map {
+    override fun get(showId : Long): Flowable<List<Episode>> {
+        return episodeDao.get(showId).map {
             EpisodeLocalMapper.toEntity(it)
         }
     }
@@ -21,5 +21,13 @@ class EpisodeLocalDatasourceImpl(
         return episodeDao.upsert(
             EpisodeLocalMapper.toDto(episodes)
         ).map {  }
+    }
+
+    override fun cache(episodes: List<Episode>): Maybe<Any> {
+        return Maybe.fromCallable {
+            episodeDao.cache(
+                *EpisodeLocalMapper.toDto(episodes).toTypedArray()
+            )
+        }
     }
 }

@@ -45,19 +45,19 @@ class EpisodeActivity : AppCompatActivity() {
 
 		viewModel = initViewModel { viewModel }
 
-		views.rootFlipper.displayedChild = VIEW_LOADING
+		views.contentFlipper.displayedChild = VIEW_LOADING
 
 		views.arrowBack.setOnClickListener {
 			finish()
 		}
 
 		viewModel.fatalError.observe(this){
-			handleException(it)
+			longToast(getString(it))
 			finish()
 		}
 
 		viewModel.episode.observe(this) {
-			views.rootFlipper.displayedChild = VIEW_CONTENT
+			views.contentFlipper.displayedChild = VIEW_CONTENT
 
 			with(it){
 				GlideApp.with(views.episodePoster)

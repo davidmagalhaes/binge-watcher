@@ -7,5 +7,4 @@ interface ShowRemoteDatasource {
     fun fetch(page : Int) : Maybe<List<Show>>
     fun lookup(showId : Long) : Maybe<List<Show>>
     fun search(query : String) : Maybe<List<Show>>
-    fun seasons(showId : Long) : Maybe<List<Any>>
 }

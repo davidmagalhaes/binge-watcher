@@ -11,9 +11,10 @@ class FavoredShowLocalDatasourceImpl(
     private val favoredShowDao: FavoredShowDao
 ) : FavoredShowLocalDatasource {
     override fun get(query : String): DataSource.Factory<Int, Show> {
-        return favoredShowDao.get(query).mapByPage {
-            FavoritedShowLocalMapper.toEntity(it)
-        }
+        return favoredShowDao.get(query)
+            .mapByPage {
+                FavoritedShowLocalMapper.toEntity(it)
+            }
     }
 
     override fun upsert(show: Show): Maybe<Any> {

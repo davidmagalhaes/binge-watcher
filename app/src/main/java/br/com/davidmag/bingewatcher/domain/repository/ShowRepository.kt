@@ -18,7 +18,9 @@ interface ShowRepository {
         pageSize : Int = DEFAULT_PAGE_SIZE
     ) : Flowable<PagingData<Show>>
 
-    fun lookup(showId : Long) : Maybe<List<Show>>
+    fun get(showId : Long) : Flowable<List<Show>>
+
+    fun lookup(showId : Long) : Maybe<Any>
 
     fun fetch(page : Int) : Maybe<Any>
 

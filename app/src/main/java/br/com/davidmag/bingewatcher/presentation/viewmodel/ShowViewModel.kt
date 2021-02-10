@@ -4,10 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import br.com.davidmag.bingewatcher.app.R
-import br.com.davidmag.bingewatcher.domain.usecase.FavoriteShowUseCase
-import br.com.davidmag.bingewatcher.domain.usecase.FetchEpisodesUseCase
-import br.com.davidmag.bingewatcher.domain.usecase.GetEpisodesUseCase
-import br.com.davidmag.bingewatcher.domain.usecase.LookupShowUseCase
+import br.com.davidmag.bingewatcher.domain.usecase.*
 import br.com.davidmag.bingewatcher.presentation.common.*
 import br.com.davidmag.bingewatcher.presentation.mapper.EpisodePresentationMapper
 import br.com.davidmag.bingewatcher.presentation.mapper.ShowPresentationMapper
@@ -18,6 +15,7 @@ import timber.log.Timber
 class ShowViewModel(
     private val showMapper: ShowPresentationMapper,
     private val episodeMapper : EpisodePresentationMapper,
+    private val getShowByIdUseCase: GetShowByIdUseCase,
     private val lookupShowUseCase: LookupShowUseCase,
     private val favoriteShowUseCase: FavoriteShowUseCase,
     private val fetchEpisodesUseCase: FetchEpisodesUseCase,
@@ -32,36 +30,42 @@ class ShowViewModel(
     }
 
     private var showId : Long = 0
-    private var selectedSeason = 1
+    private var selectedSeason = 0
 
     val show = MediatorLiveData<List<ShowPresentation>>()
     val episodes = MediatorLiveData<List<EpisodePresentation>>()
-    val favoriteState = MutableLiveData<Int>()
+    val favoriteState = MediatorLiveData<Int>()
     val fatalError = MutableLiveData<ExceptionWrapper>()
     val error = MediatorLiveData<ExceptionWrapper>()
 
     override fun init(args: Bundle?) {
-        try{
+        try {
             showId = args?.getLong(ARG_SHOW) ?: error("missing argument: $ARG_SHOW")
 
-            fetchEpisodesUseCase.execute(showId)
-                .launchOn(error)
-
-            lookupShowUseCase.execute(showId)
-                .map {
-                    it.onEach { show ->
+            getShowByIdUseCase.execute(showId)
+                .toPresentation(showMapper)
+                .map { showList ->
+                    showList.onEach {
                         favoriteState.postValue(
-                            if(show.favored) FAVORITE_STATE_ENABLED
-                            else FAVORITE_STATE_DISABLED
+                            if(it.favored) FAVORITE_STATE_ENABLED else FAVORITE_STATE_DISABLED
                         )
                     }
                 }
-                .toPresentation(showMapper)
                 .toLiveData(show)
 
-            selectSeason(1)
+            getEpisodesUseCase.execute(showId)
+                .toPresentation(episodeMapper)
+                .toLiveData(episodes)
+
+            lookupShowUseCase.execute(showId)
+                .launchOn(error) {
+                    ExceptionWrapper(
+                        exception = it,
+                        errorMessage = R.string.error_internet
+                    )
+                }
         }
-        catch (e : Exception){
+        catch (e : Exception) {
             Timber.e(e)
             fatalError.postValue(
                 ExceptionWrapper(
@@ -73,38 +77,44 @@ class ShowViewModel(
         }
     }
 
-    fun selectSeason(season : Int){
-        selectedSeason = season
-        getEpisodesUseCase.execute(showId, selectedSeason)
-            .firstElement()
-            .toPresentation(episodeMapper)
-            .map {
-               episodes.postValue(it)
+    fun selectSeason(season : Int) {
+        if(selectedSeason != season){
+            show.value?.first()?.seasonsIds.orEmpty().ifNotEmpty { seasonsIds ->
+                selectedSeason = season
+                fetchEpisodesUseCase.execute(showId, seasonsIds[season - 1])
+                    .launchOn(error) {
+                        ExceptionWrapper(
+                            exception = it,
+                            errorMessage = R.string.error_internet
+                        )
+                    }
             }
-            .launchOn(error)
+        }
     }
 
     fun favorite() {
-        if(favoriteState.value != FAVORITE_STATE_LOADING){
+        if(favoriteState.value != FAVORITE_STATE_LOADING) {
             val lastValue = favoriteState.value
-            favoriteState.postValue(FAVORITE_STATE_LOADING)
+
+            favoriteState.value = FAVORITE_STATE_LOADING
 
             favoriteShowUseCase.execute(showId, lastValue != FAVORITE_STATE_ENABLED)
                 .map {
-                    if(lastValue == FAVORITE_STATE_ENABLED){
-                        favoriteState.postValue(FAVORITE_STATE_DISABLED)
-                    }
-                    else{
-                        favoriteState.postValue(FAVORITE_STATE_ENABLED)
+                    when(lastValue){
+                        FAVORITE_STATE_ENABLED -> FAVORITE_STATE_DISABLED
+                        else -> FAVORITE_STATE_ENABLED
                     }
                 }
-                .doOnError { exception ->
+                .onErrorReturn { exception ->
                     Timber.e(exception)
-                    lastValue?.let {
-                        favoriteState.postValue(it)
-                    }
+                    error.postValue(ExceptionWrapper(
+                        exception = exception,
+                        errorMessage = R.string.generic_error,
+                        errorArgs = listOf(exception.message)
+                    ))
+                    lastValue
                 }
-                .launchOn(error)
+                .toLiveData(favoriteState)
         }
     }
 }

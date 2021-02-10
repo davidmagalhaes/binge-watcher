@@ -9,4 +9,6 @@
     <string name="show_subtitle_format">%s - %s</string>
     <string name="episode_season_list_format">Season %d</string>
     <string name="episode_number_separator">.</string>
+    <string name="generic_error">An error has occurred: %s</string>
+    <string name="error_internet">Verifique sua conexão com a internet</string>
 </resources>

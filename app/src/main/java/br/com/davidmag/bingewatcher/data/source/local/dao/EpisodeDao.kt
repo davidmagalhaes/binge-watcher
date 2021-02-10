@@ -12,6 +12,15 @@ import io.reactivex.Flowable
 @Dao
 interface EpisodeDao : BaseDao<EpisodeDb> {
 
-    @Query("SELECT * FROM EpisodeDb WHERE episode_show_id = :showId and season = :season order by number")
-    fun get(showId : Long, season : Int) : Flowable<List<EpisodeDb>>
+    @Query("SELECT * FROM EpisodeDb WHERE episode_show_id = :showId order by number")
+    fun get(showId : Long) : Flowable<List<EpisodeDb>>
+
+    @Transaction
+    fun cache(vararg episodes : EpisodeDb) {
+        deleteAll()
+        insertSync(*episodes)
+    }
+
+    @Query("DELETE FROM EpisodeDb")
+    fun deleteAll() : Int
 }

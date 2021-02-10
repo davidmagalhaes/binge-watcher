@@ -8,7 +8,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface EpisodeApi {
-
-    @GET("shows/{id}/episodes")
-    fun fetch(@Path("id") showId : Long) : Maybe<@JvmSuppressWildcards List<EpisodeResponse>>
+    @GET("seasons/{seasonId}/episodes")
+    fun fetch(@Path("seasonId") seasonId : Long) : Maybe<@JvmSuppressWildcards List<EpisodeResponse>>
 }

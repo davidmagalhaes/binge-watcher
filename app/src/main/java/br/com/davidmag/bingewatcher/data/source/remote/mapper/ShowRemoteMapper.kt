@@ -7,7 +7,7 @@ import org.threeten.bp.LocalDate
 
 object ShowRemoteMapper : EntityMapper<Show, ShowResponse> {
     override val toDtoMapper: (Show) -> ShowResponse
-        get() = TODO("Not yet implemented")
+        get() = error("Not implemented")
 
     override val toEntityMapper: (ShowResponse) -> Show = {
         with(it){
@@ -22,8 +22,10 @@ object ShowRemoteMapper : EntityMapper<Show, ShowResponse> {
                 days = schedule?.days.orEmpty(),
                 time = schedule?.time.orEmpty(),
                 status = status,
-                ratingAvg = rating.average,
-                premiered = premiered
+                ratingAvg = rating?.average ?: 0.0,
+                premiered = premiered,
+                imageBackgroundUrl = null,
+                seasonsIds = emptyList()
             )
         }
     }

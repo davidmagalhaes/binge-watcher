@@ -3,7 +3,6 @@ package br.com.davidmag.bingewatcher.infra.di
 import android.app.Application
 import br.com.davidmag.bingewatcher.domain.usecase.*
 import br.com.davidmag.bingewatcher.infra.App
-import br.com.davidmag.bingewatcher.infra.di.UseCaseModule
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import dagger.BindsInstance
 import dagger.Component
@@ -33,6 +32,7 @@ interface ApplicationComponent {
     fun okHttpUrlLoaderFactory() : OkHttpUrlLoader.Factory
     fun getShowUseCase() : GetShowUseCase
     fun searchShowUseCase(): SearchShowUseCase
+    fun getShowByIdUseCase(): GetShowByIdUseCase
     fun lookupShowUseCase() : LookupShowUseCase
     fun favoriteShowUseCase() : FavoriteShowUseCase
     fun fetchEpisodesUseCase()  : FetchEpisodesUseCase
