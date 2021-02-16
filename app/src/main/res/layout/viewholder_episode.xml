@@ -14,7 +14,7 @@
         android:adjustViewBounds="true"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/episode_number_premiered"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         android:textSize="@dimen/small_text_size"
         tools:text="@tools:sample/lorem" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/episode_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         android:textSize="@dimen/large_text_size"
         tools:text="@tools:sample/lorem" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/episode_summary"
         android:maxLines="3"
         android:ellipsize="end"

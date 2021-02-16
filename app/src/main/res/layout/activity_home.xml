@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_margin="0dp"
@@ -27,7 +27,7 @@
                 app:contentInsetStart="0dp"
                 app:popupTheme="@style/AppTheme.PopupOverlay" >
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
@@ -59,9 +59,9 @@
 
                     </ViewFlipper>
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-            </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 

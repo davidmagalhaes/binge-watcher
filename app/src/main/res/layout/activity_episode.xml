@@ -43,7 +43,7 @@
                 android:layout_marginTop="@dimen/large_margin" />
 
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/episode_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/episode_title"
                 app:layout_constraintTop_toTopOf="@id/episode_title" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/episode_number_dot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/episode_title"
                 app:layout_constraintTop_toTopOf="@id/episode_number" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/episode_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                 app:layout_constraintStart_toEndOf="@id/episode_number"
                 app:layout_constraintBottom_toBottomOf="@id/episode_poster_layout" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/episode_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/episode_poster_layout" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/episode_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

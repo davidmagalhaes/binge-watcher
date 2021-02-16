@@ -74,6 +74,12 @@ class ShowActivity : AppCompatActivity() {
 			showGenres.adapter = genreAdapter
 			showGenres.addItemDecoration(HorizontalSpaceItemDecoration(resources))
 
+			episodeAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+				override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+					views.contentFlipper.displayedChild = VIEW_CONTENT
+				}
+			})
+
 			showSeasonEpisodes.adapter = episodeAdapter
 			showSeasonEpisodes.addItemDecoration(
 				HorizontalSpaceItemDecoration(resources, R.dimen.large_margin)
@@ -116,12 +122,6 @@ class ShowActivity : AppCompatActivity() {
 				episodeAdapter.items = it
 				episodeAdapter.notifyDataSetChanged()
 			}
-
-			episodeAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver(){
-				override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-					views.contentFlipper.displayedChild = VIEW_CONTENT
-				}
-			})
 
 			viewModel.show.observe(this@ShowActivity){ showList ->
 				val show = showList.first()
