@@ -16,7 +16,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./build/gradlew build
+        run: ./gradlew build
   test:
     needs: [build]
     runs-on: ubuntu-latest
