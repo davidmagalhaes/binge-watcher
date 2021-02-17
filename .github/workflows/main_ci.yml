@@ -14,8 +14,8 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
   test:
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - name: Run Unit Tests
-        needs: [build]
         run: ./gradlew test --stacktrace
