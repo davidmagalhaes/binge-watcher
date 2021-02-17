@@ -5,6 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+           path: build
       - name: set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -12,10 +15,10 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./build/gradlew build
   test:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
       - name: Run Unit Tests
-        run: ./gradlew test --stacktrace
+        run: ./build/gradlew test --stacktrace
