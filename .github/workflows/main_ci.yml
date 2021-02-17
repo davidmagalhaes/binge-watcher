@@ -17,4 +17,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Unit Tests
+        needs: [build]
         run: ./gradlew test --stacktrace
