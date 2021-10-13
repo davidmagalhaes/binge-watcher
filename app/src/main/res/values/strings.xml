@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">app</string>
+    <string name="app_name">Binge Watcher</string>
     <string name="ui_home_menu_search">Search shows</string>
     <string name="ui_home_menu_search_hint">Search shows</string>
     <string name="show_premiered_format">MMMM, dd, yyyy</string>

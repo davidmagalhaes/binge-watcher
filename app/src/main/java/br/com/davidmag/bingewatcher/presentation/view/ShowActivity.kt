@@ -1,7 +1,6 @@
 package br.com.davidmag.bingewatcher.presentation.view
 
 import android.content.Intent
-import android.database.DataSetObserver
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -74,13 +73,13 @@ class ShowActivity : AppCompatActivity() {
 			showGenres.adapter = genreAdapter
 			showGenres.addItemDecoration(HorizontalSpaceItemDecoration(resources))
 
+			showSeasonEpisodes.adapter = episodeAdapter
 			episodeAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-				override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+				override fun onChanged() {
 					views.contentFlipper.displayedChild = VIEW_CONTENT
 				}
 			})
 
-			showSeasonEpisodes.adapter = episodeAdapter
 			showSeasonEpisodes.addItemDecoration(
 				HorizontalSpaceItemDecoration(resources, R.dimen.large_margin)
 			)
