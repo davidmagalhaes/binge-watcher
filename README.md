@@ -1,9 +1,9 @@
 # Binge Watcher
-    An app to get information about series and its episodes. 
-    At first, aimed only on tv shows, but who knows what comes next?
+    An app to get information about series and its episodes. At first, aimed only on tv shows, 
+    but who knows what comes next?
 
 #### How to install
-    The app is available on (Play Store)[https://play.google.com/store/apps/details?id=br.com.davidmag.bingewatcher]
+The app is available on [Play Store](https://play.google.com/store/apps/details?id=br.com.davidmag.bingewatcher)
 
 #### Stack
 
