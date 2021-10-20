@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/show_poster"
+        android:layout_width="120dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="@dimen/large_margin"
+        android:adjustViewBounds="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <androidx.appcompat.widget.AppCompatRatingBar
+        android:id="@+id/show_rating"
+        style="?android:attr/ratingBarStyleIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:layout_marginStart="@dimen/large_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        app:layout_constraintStart_toEndOf="@id/show_poster"
+        app:layout_constraintTop_toTopOf="@id/show_poster" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/show_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/large_margin"
+        android:layout_marginBottom="@dimen/large_margin"
+        app:layout_constraintStart_toEndOf="@id/show_poster"
+        app:layout_constraintTop_toBottomOf="@id/show_rating"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/show_premiere"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:maxLines="2"
+        android:ellipsize="marquee"
+        android:textSize="@dimen/header_text_size"
+        tools:text="@tools:sample/lorem" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/show_premiere"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/large_margin"
+        app:layout_constraintStart_toEndOf="@id/show_poster"
+        app:layout_constraintTop_toBottomOf="@id/show_title"
+        app:layout_constraintBottom_toTopOf="@id/show_status"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="@dimen/small_text_size"
+        tools:text="January, 13, 2002" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/show_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/large_margin"
+        app:layout_constraintStart_toEndOf="@id/show_poster"
+        app:layout_constraintTop_toBottomOf="@id/show_premiere"
+        app:layout_constraintBottom_toTopOf="@id/show_genres"
+        android:textSize="@dimen/small_text_size"
+        android:textColor="@color/textColorSecondary"
+        tools:text="Ended" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/show_genres"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginHorizontal="@dimen/large_margin"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toEndOf="@id/show_poster"
+        app:layout_constraintTop_toBottomOf="@id/show_premiere"
+        app:layout_constraintBottom_toBottomOf="@id/show_poster"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0"
+        android:focusable="false"
+        android:clickable="false"
+        app:spanCount="1"
+        tools:itemCount="3"
+        tools:listitem="@layout/genre_chip" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

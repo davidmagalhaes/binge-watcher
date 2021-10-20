@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FF6A1B9A</color>
+    <color name="colorPrimaryDark">#FF320d6d</color>
+    <color name="colorPrimaryDarkTransparent">#00320d6d</color>
+    <color name="textColorAccent">@color/colorAccent</color>
+    <color name="textColorPrimary">#fff</color>
+    <color name="textColorSecondary">#888888</color>
+    <color name="colorAccent">#FFE558</color>
+    <color name="poster_overlay">#88666666</color>
+    <color name="colorSkeleton">#aaaaaa</color>
+</resources>
