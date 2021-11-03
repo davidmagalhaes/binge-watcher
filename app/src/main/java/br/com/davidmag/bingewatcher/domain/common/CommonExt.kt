@@ -25,4 +25,10 @@ fun Int?.orZero() = this ?: 0
 fun Int.isZero() = this == 0
 fun Int.isNotZero() = this != 0
 
+fun Long?.isNullOrZero() = orZero().isZero()
+fun Long?.isNotNullOrZero() = orZero().isNotZero()
+fun Long?.orZero() = this ?: 0
+fun Long.isZero() = this == 0L
+fun Long.isNotZero() = this != 0L
+
 fun Boolean?.orFalse() = this ?: false

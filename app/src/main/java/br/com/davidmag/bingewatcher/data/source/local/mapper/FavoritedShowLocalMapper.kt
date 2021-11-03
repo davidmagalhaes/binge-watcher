@@ -1,11 +1,12 @@
 package br.com.davidmag.bingewatcher.data.source.local.mapper
 
-import br.com.davidmag.bingewatcher.data.common.EntityMapper
+import br.com.davidmag.bingewatcher.data.common.EntityDtoMapper
 import br.com.davidmag.bingewatcher.data.source.local.dto.FavoredShowDb
+import br.com.davidmag.bingewatcher.data.source.local.dto.FavoredShowWithJoins
 import br.com.davidmag.bingewatcher.data.source.local.dto.ShowDb
 import br.com.davidmag.bingewatcher.domain.model.Show
 
-object FavoritedShowLocalMapper : EntityMapper<Show, FavoredShowDb> {
+object FavoritedShowLocalMapper : EntityDtoMapper<Show, FavoredShowWithJoins, FavoredShowDb> {
     override val toDtoMapper: (Show) -> FavoredShowDb = {
         with(it){
             FavoredShowDb(ShowDb(
@@ -13,7 +14,6 @@ object FavoritedShowLocalMapper : EntityMapper<Show, FavoredShowDb> {
                 name = name,
                 time = time,
                 days = days,
-                genres = genres,
                 mediumImage = imageMediumUrl,
                 originalImage = imageOriginalUrl,
                 summary = summary,
@@ -27,23 +27,23 @@ object FavoritedShowLocalMapper : EntityMapper<Show, FavoredShowDb> {
         }
     }
 
-    override val toEntityMapper: (FavoredShowDb) -> Show = {
-        with(it.show){
+    override val toEntityMapper: (FavoredShowWithJoins) -> Show = {
+        with(it.show.show){
             Show(
                 id = id,
                 name = name,
                 time = time,
                 days = days,
-                genres = genres,
                 imageMediumUrl = mediumImage,
                 imageOriginalUrl = originalImage,
                 summary = summary,
                 status = status,
+                genres = GenreLocalMapper.toEntity(it.genres),
                 premiered = premiered,
                 ratingAvg = ratingAvg,
                 imageBackgroundUrl = backgroundImage,
                 images = imageList,
-                seasonsIds = it.show.seasonsIds
+                seasonsIds = seasonsIds
             )
         }
     }
