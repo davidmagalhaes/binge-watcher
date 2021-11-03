@@ -22,7 +22,7 @@ interface ShowRepository {
 
     fun lookup(showId : Long) : Maybe<Any>
 
-    fun fetch(page : Int) : Maybe<Any>
+    fun fetch(page : Int) : Maybe<Long>
 
-    fun search(query : String) : Maybe<Any>
+    fun search(query : String) : Maybe<Long>
 }

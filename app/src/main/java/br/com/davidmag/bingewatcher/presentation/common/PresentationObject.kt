@@ -9,6 +9,4 @@ interface PresentationObject {
     }
 
     val viewType: Int
-    val exception: Throwable?
-        get() = null
 }

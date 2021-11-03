@@ -5,13 +5,9 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
-data class ShowWithJoins (
+data class FavoredShowWithJoins (
     @Embedded
-    val show: ShowDb,
-    @ColumnInfo(name = "favored")
-    val favored : Boolean? = null,
-    @ColumnInfo(name = "seasonCount")
-    val seasonCount : Int? = null,
+    val show: FavoredShowDb,
 
     @Relation(
         parentColumn = "_show_id",
@@ -22,5 +18,5 @@ data class ShowWithJoins (
             entityColumn = "genre_id"
         )
     )
-    val genresDb: List<GenreDb>
+    val genres: List<GenreDb>
 )

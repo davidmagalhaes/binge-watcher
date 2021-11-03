@@ -13,8 +13,8 @@ class ShowPresentationMapper(
     private val resources: Resources
 ) : PresentationMapper<Show, ShowPresentation>() {
 
-    override val contentMapper: (List<Show>) -> List<ShowPresentation> = {
-        it.map { show ->
+    override val contentMapper: (List<Show>) -> List<ShowPresentation> = { shows ->
+        shows.map { show ->
             with(show) {
                 ShowPresentation(
                     viewType = PresentationObject.VIEWTYPE_CONTENT,
@@ -22,7 +22,7 @@ class ShowPresentationMapper(
                     name = name,
                     time = time,
                     days = days,
-                    genres = genres,
+                    genres = genres.map { it.id },
                     summary = HtmlCompat.fromHtml(
                         summary,
                         HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_BLOCKQUOTE

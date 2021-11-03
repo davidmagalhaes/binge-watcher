@@ -5,6 +5,7 @@ import br.com.davidmag.bingewatcher.data.repository.ShowRepositoryImpl
 import br.com.davidmag.bingewatcher.data.scheduler.AppSchedulers
 import br.com.davidmag.bingewatcher.data.source.local.contract.EpisodeLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.local.contract.FavoredShowLocalDatasource
+import br.com.davidmag.bingewatcher.data.source.local.contract.GenreLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.local.contract.ShowLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.remote.contract.EpisodeRemoteDatasource
 import br.com.davidmag.bingewatcher.data.source.remote.contract.ShowRemoteDatasource
@@ -22,12 +23,14 @@ class RepositoryModule {
         appSchedulers: AppSchedulers,
         showLocalDatasource: ShowLocalDatasource,
         favoredShowLocalDatasource: FavoredShowLocalDatasource,
-        showRemoteDatasource: ShowRemoteDatasource
+        showRemoteDatasource: ShowRemoteDatasource,
+        genreLocalDatasource: GenreLocalDatasource
     ) : ShowRepository = ShowRepositoryImpl(
         appSchedulers,
         showLocalDatasource,
         favoredShowLocalDatasource,
-        showRemoteDatasource
+        showRemoteDatasource,
+        genreLocalDatasource
     )
 
     @Singleton

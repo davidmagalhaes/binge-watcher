@@ -10,7 +10,7 @@ data class Show(
     val imageOriginalUrl : String?,
     val time : String,
     val days : List<String>,
-    val genres : List<String>,
+    var genres : List<Genre> = emptyList(),
     var seasonsIds : List<Long>,
     val summary : String,
     val status : String,
