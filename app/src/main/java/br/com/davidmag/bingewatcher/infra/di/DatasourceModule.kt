@@ -2,12 +2,15 @@ package br.com.davidmag.bingewatcher.infra.di
 
 import br.com.davidmag.bingewatcher.data.source.local.contract.EpisodeLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.local.contract.FavoredShowLocalDatasource
+import br.com.davidmag.bingewatcher.data.source.local.contract.GenreLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.local.contract.ShowLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.local.dao.EpisodeDao
 import br.com.davidmag.bingewatcher.data.source.local.dao.FavoredShowDao
+import br.com.davidmag.bingewatcher.data.source.local.dao.GenreDao
 import br.com.davidmag.bingewatcher.data.source.local.dao.ShowDao
 import br.com.davidmag.bingewatcher.data.source.local.impl.EpisodeLocalDatasourceImpl
 import br.com.davidmag.bingewatcher.data.source.local.impl.FavoredShowLocalDatasourceImpl
+import br.com.davidmag.bingewatcher.data.source.local.impl.GenreLocalDatasourceImpl
 import br.com.davidmag.bingewatcher.data.source.local.impl.ShowLocalDatasourceImpl
 import br.com.davidmag.bingewatcher.data.source.remote.api.EpisodeApi
 import br.com.davidmag.bingewatcher.data.source.remote.api.ShowApi
@@ -55,4 +58,11 @@ class DatasourceModule {
         episodeApi: EpisodeApi
     ) : EpisodeRemoteDatasource =
         EpisodeRemoteDatasourceImpl(episodeApi)
+
+    @Singleton
+    @Provides
+    fun provideGenreLocalDatasource(
+        genreDao: GenreDao
+    ) : GenreLocalDatasource =
+        GenreLocalDatasourceImpl(genreDao)
 }

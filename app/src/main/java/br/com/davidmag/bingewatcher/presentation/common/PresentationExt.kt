@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import io.reactivex.Flowable
 import io.reactivex.Maybe
-import timber.log.Timber
 
 inline fun <reified T: ViewModel> AppCompatActivity.initViewModel(crossinline factory: () -> T): T =
     _initViewModel(this, intent.extras, factory)
@@ -24,7 +23,7 @@ fun Context.getString(messageRes : Int?, vararg args : Any?) : String? {
     return messageRes?.let { getString(it, *args) }
 }
 
-fun Context.getString(wrapper : ExceptionWrapper) : String? {
+fun Context.getString(wrapper : ExceptionPresentation) : String? {
     return getString(
         wrapper.errorMessage,
         *wrapper.errorArgs.toTypedArray()
@@ -59,14 +58,14 @@ inline fun <reified T: ViewModel> _initViewModel(
 @Suppress("UNCHECKED_CAST")
 fun Maybe<*>.submit(
     mediator : MediatorLiveData<PresentationObject>,
-    mediatorFailure: MediatorLiveData<ExceptionWrapper>? = null,
-    exceptionHandler : (Throwable) -> ExceptionWrapper = { ExceptionWrapper(it) }
+    mediatorFailure: MediatorLiveData<ExceptionPresentation>? = null,
+    exceptionHandler : (Throwable) -> ExceptionPresentation = { ExceptionPresentation(it) }
 ) = PresentationUtils.submit(this as Maybe<Any>, mediator, mediatorFailure, exceptionHandler)
 
 @Suppress("UNCHECKED_CAST")
 fun Maybe<*>.launchOn(
-    mediatorFailure: MediatorLiveData<ExceptionWrapper>,
-    exceptionHandler : (Throwable) -> ExceptionWrapper = { ExceptionWrapper(it) }
+    mediatorFailure: MediatorLiveData<ExceptionPresentation>,
+    exceptionHandler : (Throwable) -> ExceptionPresentation = { ExceptionPresentation(it) }
 ) = PresentationUtils.launchOn(this as Maybe<Any>, mediatorFailure, exceptionHandler)
 
 fun <Entity , Dto: PresentationObject> Flowable<List<Entity>>.toPresentation(mapper : PresentationMapper<Entity, Dto>) : Flowable<List<Dto>> {

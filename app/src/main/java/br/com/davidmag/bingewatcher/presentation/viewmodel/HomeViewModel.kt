@@ -3,14 +3,13 @@ package br.com.davidmag.bingewatcher.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.map
 import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.domain.usecase.GetShowUseCase
 import br.com.davidmag.bingewatcher.domain.usecase.SearchShowUseCase
 import br.com.davidmag.bingewatcher.presentation.common.BaseViewModel
-import br.com.davidmag.bingewatcher.presentation.common.ExceptionWrapper
+import br.com.davidmag.bingewatcher.presentation.common.ExceptionPresentation
 import br.com.davidmag.bingewatcher.presentation.common.launchOn
 import br.com.davidmag.bingewatcher.presentation.common.toLiveData
 import br.com.davidmag.bingewatcher.presentation.mapper.ShowPresentationMapper
@@ -19,7 +18,8 @@ import br.com.davidmag.bingewatcher.presentation.model.ShowPresentation
 class HomeViewModel(
     private val showPresentationMapper: ShowPresentationMapper,
     private val getShowUseCase: GetShowUseCase,
-    private val searchShowUseCase: SearchShowUseCase
+    private val searchShowUseCase: SearchShowUseCase,
+
 ) : BaseViewModel(){
 
     companion object {
@@ -31,8 +31,9 @@ class HomeViewModel(
 
     val query = MutableLiveData<String>()
     val shows = MediatorLiveData<PagingData<ShowPresentation>>()
+    val genres = MediatorLiveData<List<String>>()
     val favoriteState = MutableLiveData<Int>()
-    val errors = MediatorLiveData<ExceptionWrapper>()
+    val errors = MediatorLiveData<ExceptionPresentation>()
 
     fun updateShows(){
         val isFavoriteEnabled = favoriteState.value == FAVORITE_STATE_ENABLED
@@ -53,7 +54,7 @@ class HomeViewModel(
 
         searchShowUseCase.execute(query)
             .launchOn(errors) {
-                ExceptionWrapper(
+                ExceptionPresentation(
                     exception = it,
                     errorMessage = R.string.generic_error,
                     errorArgs = listOf(it.message)

@@ -19,11 +19,10 @@ class PersistenceModule {
         application: Application
     ) : LocalDatabase {
         return Room.databaseBuilder(
-                application,
-                LocalDatabase::class.java,
-                "bingewatcher.db"
-            )
-            .fallbackToDestructiveMigration()
+            application,
+            LocalDatabase::class.java,
+            "bingewatcher.db"
+        ).fallbackToDestructiveMigration()
             .allowMainThreadQueries()
             .build()
     }
@@ -46,4 +45,9 @@ class PersistenceModule {
     fun provideEpisodeDao(
         database: LocalDatabase
     ) = database.getEpisodeDao()
+
+    @Provides
+    fun provideGenreDao(
+        database: LocalDatabase
+    ) = database.getGenreDao()
 }

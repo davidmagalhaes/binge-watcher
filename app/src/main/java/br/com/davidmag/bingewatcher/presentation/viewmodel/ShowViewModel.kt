@@ -35,8 +35,8 @@ class ShowViewModel(
     val show = MediatorLiveData<List<ShowPresentation>>()
     val episodes = MediatorLiveData<List<EpisodePresentation>>()
     val favoriteState = MediatorLiveData<Int>()
-    val fatalError = MutableLiveData<ExceptionWrapper>()
-    val error = MediatorLiveData<ExceptionWrapper>()
+    val fatalError = MutableLiveData<ExceptionPresentation>()
+    val error = MediatorLiveData<ExceptionPresentation>()
 
     override fun init(args: Bundle?) {
         try {
@@ -44,11 +44,12 @@ class ShowViewModel(
 
             getShowByIdUseCase.execute(showId)
                 .toPresentation(showMapper)
-                .map { showList ->
-                    showList.onEach {
+                .doAfterNext { showList ->
+                    showList.firstOrNull {
                         favoriteState.postValue(
                             if(it.favored) FAVORITE_STATE_ENABLED else FAVORITE_STATE_DISABLED
                         )
+                        true
                     }
                 }
                 .toLiveData(show)
@@ -59,7 +60,7 @@ class ShowViewModel(
 
             lookupShowUseCase.execute(showId)
                 .launchOn(error) {
-                    ExceptionWrapper(
+                    ExceptionPresentation(
                         exception = it,
                         errorMessage = R.string.error_internet
                     )
@@ -68,7 +69,7 @@ class ShowViewModel(
         catch (e : Exception) {
             Timber.e(e)
             fatalError.postValue(
-                ExceptionWrapper(
+                ExceptionPresentation(
                     exception = e,
                     errorMessage = R.string.generic_fatal_error,
                     errorArgs = listOf(e.message)
@@ -79,11 +80,11 @@ class ShowViewModel(
 
     fun selectSeason(season : Int) {
         if(selectedSeason != season){
-            show.value?.first()?.seasonsIds.orEmpty().ifNotEmpty { seasonsIds ->
+            show.value?.firstOrNull()?.seasonsIds.orEmpty().ifNotEmpty { seasonsIds ->
                 selectedSeason = season
                 fetchEpisodesUseCase.execute(showId, seasonsIds[season - 1])
                     .launchOn(error) {
-                        ExceptionWrapper(
+                        ExceptionPresentation(
                             exception = it,
                             errorMessage = R.string.error_internet
                         )
@@ -107,7 +108,7 @@ class ShowViewModel(
                 }
                 .onErrorReturn { exception ->
                     Timber.e(exception)
-                    error.postValue(ExceptionWrapper(
+                    error.postValue(ExceptionPresentation(
                         exception = exception,
                         errorMessage = R.string.generic_error,
                         errorArgs = listOf(exception.message)

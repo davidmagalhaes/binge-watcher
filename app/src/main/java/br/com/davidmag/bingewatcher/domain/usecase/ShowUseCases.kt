@@ -10,7 +10,7 @@ class SearchShowUseCase(
     private val showRepository: ShowRepository
 ) {
     fun execute(query : String) : Maybe<Any> {
-        return showRepository.search(query)
+        return showRepository.search(query).map { Any() }
     }
 }
 

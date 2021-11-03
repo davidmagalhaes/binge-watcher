@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import br.com.davidmag.bingewatcher.app.databinding.ActivityHomeBinding
+import br.com.davidmag.bingewatcher.presentation.adapter.GenreAdapter
 import br.com.davidmag.bingewatcher.presentation.adapter.ShowAdapter
 import br.com.davidmag.bingewatcher.presentation.common.decorator.VerticalSpaceItemDecoration
 import br.com.davidmag.bingewatcher.presentation.common.getString
@@ -43,6 +45,10 @@ class HomeActivity : AppCompatActivity() {
 		}
 	}
 
+	private val genreAdapter by lazy {
+		GenreAdapter(this, emptyList())
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(views.root)
@@ -67,9 +73,18 @@ class HomeActivity : AppCompatActivity() {
 			})
 
 			homeRecycler.adapter = adapter
-			homeRecycler.addItemDecoration(VerticalSpaceItemDecoration(
-				applicationContext.resources
-			))
+			homeRecycler.addItemDecoration(
+				VerticalSpaceItemDecoration(applicationContext.resources)
+			)
+
+			homeRecycler.addOnScrollListener(object : OnScrollListener() {
+				override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+					super.onScrolled(recyclerView, dx, dy)
+					swiper.isEnabled = !homeRecycler.canScrollVertically(-1)
+				}
+			})
+
+			genresFilterRecycler.adapter
 
 			viewFavorites.setOnClickListener {
 				viewModel.showFavoritesClick()
