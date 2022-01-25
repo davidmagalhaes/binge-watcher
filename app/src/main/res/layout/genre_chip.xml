@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:theme="@style/Theme.MaterialComponents"
     android:textAppearance="@style/chipTextAppearance"
+    android:backgroundTint="@color/chip_color"
     android:id="@+id/genre_chip"
     android:layout_marginTop="@dimen/default_margin"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:textColor="@color/chip_text_color"
     tools:text="Comedy" />

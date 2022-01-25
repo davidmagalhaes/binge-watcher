@@ -27,7 +27,7 @@ interface ApplicationComponent {
         fun applicationBind(application: Application): Builder
     }
 
-    fun applicaton() : Application
+    fun application() : Application
 
     fun okHttpUrlLoaderFactory() : OkHttpUrlLoader.Factory
     fun getShowUseCase() : GetShowUseCase
@@ -37,6 +37,7 @@ interface ApplicationComponent {
     fun favoriteShowUseCase() : FavoriteShowUseCase
     fun fetchEpisodesUseCase()  : FetchEpisodesUseCase
     fun getEpisodesUseCase() : GetEpisodesUseCase
+    fun getGenresUseCase() : GetGenresUseCase
 
     fun inject(application : App)
 }

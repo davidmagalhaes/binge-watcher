@@ -35,16 +35,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/genres_filter_recycler"
-                        android:layout_width="wrap_content"
-                        android:layout_height="?attr/actionBarSize"
-                        android:layout_marginHorizontal="@dimen/large_margin"
-                        tools:listitem="@layout/genre_chip"
-                        tools:itemCount="4"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        android:orientation="horizontal" />
-
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -58,23 +48,13 @@
                             app:iconifiedByDefault="false"
                             app:queryHint="@string/ui_home_menu_search_hint" />
 
-                        <ViewFlipper
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/view_favorites"
-                            android:layout_width="wrap_content"
+                            android:layout_width="24dp"
                             android:layout_height="match_parent"
+                            android:src="@drawable/ic_favorite_selector"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginHorizontal="@dimen/large_margin">
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:layout_width="24dp"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/ic_baseline_favorite_border_24" />
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:layout_width="24dp"
-                                android:layout_height="match_parent"
-                                android:src="@drawable/ic_baseline_favorite_24" />
-
-                        </ViewFlipper>
+                            android:layout_marginHorizontal="@dimen/large_margin" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
