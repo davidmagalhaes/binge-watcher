@@ -1,6 +1,7 @@
 package br.com.davidmag.bingewatcher.infra.di
 
 import br.com.davidmag.bingewatcher.data.repository.EpisodeRepositoryImpl
+import br.com.davidmag.bingewatcher.data.repository.GenreRepositoryImpl
 import br.com.davidmag.bingewatcher.data.repository.ShowRepositoryImpl
 import br.com.davidmag.bingewatcher.data.scheduler.AppSchedulers
 import br.com.davidmag.bingewatcher.data.source.local.contract.EpisodeLocalDatasource
@@ -10,6 +11,7 @@ import br.com.davidmag.bingewatcher.data.source.local.contract.ShowLocalDatasour
 import br.com.davidmag.bingewatcher.data.source.remote.contract.EpisodeRemoteDatasource
 import br.com.davidmag.bingewatcher.data.source.remote.contract.ShowRemoteDatasource
 import br.com.davidmag.bingewatcher.domain.repository.EpisodeRepository
+import br.com.davidmag.bingewatcher.domain.repository.GenreRepository
 import br.com.davidmag.bingewatcher.domain.repository.ShowRepository
 import dagger.Module
 import dagger.Provides
@@ -44,4 +46,10 @@ class RepositoryModule {
         episodeRemoteDatasource,
         episodeLocalDatasource
     )
+
+    @Singleton
+    @Provides
+    fun provideGenreRepository(
+        genreLocalDatasource: GenreLocalDatasource
+    ) : GenreRepository = GenreRepositoryImpl(genreLocalDatasource)
 }

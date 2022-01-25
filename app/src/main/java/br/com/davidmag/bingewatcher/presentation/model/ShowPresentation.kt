@@ -1,9 +1,8 @@
 package br.com.davidmag.bingewatcher.presentation.model
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.text.Spanned
 import br.com.davidmag.bingewatcher.presentation.common.PresentationObject
+import java.util.Collections.emptyList
 
 data class ShowPresentation(
     override val viewType: Int,

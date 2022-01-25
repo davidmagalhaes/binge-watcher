@@ -7,7 +7,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import br.com.davidmag.bingewatcher.app.databinding.ActivityHomeBinding
-import br.com.davidmag.bingewatcher.presentation.adapter.GenreAdapter
 import br.com.davidmag.bingewatcher.presentation.adapter.ShowAdapter
 import br.com.davidmag.bingewatcher.presentation.common.decorator.VerticalSpaceItemDecoration
 import br.com.davidmag.bingewatcher.presentation.common.getString
@@ -45,9 +44,6 @@ class HomeActivity : AppCompatActivity() {
 		}
 	}
 
-	private val genreAdapter by lazy {
-		GenreAdapter(this, emptyList())
-	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -56,8 +52,6 @@ class HomeActivity : AppCompatActivity() {
 		presentationComponent.inject(this)
 
 		viewModel = initViewModel { viewModel }
-
-		viewModel.updateShows()
 
 		with(views) {
 			contentFlipper.displayedChild = VIEW_LOADING
@@ -84,8 +78,6 @@ class HomeActivity : AppCompatActivity() {
 				}
 			})
 
-			genresFilterRecycler.adapter
-
 			viewFavorites.setOnClickListener {
 				viewModel.showFavoritesClick()
 			}
@@ -111,7 +103,7 @@ class HomeActivity : AppCompatActivity() {
 			}
 
 			viewModel.favoriteState.observe(this@HomeActivity) {
-				viewFavorites.displayedChild = it
+				viewFavorites.isSelected = it
 			}
 
 			viewModel.errors.observe(this@HomeActivity){ exception ->

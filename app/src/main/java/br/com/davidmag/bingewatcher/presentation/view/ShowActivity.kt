@@ -1,5 +1,6 @@
 package br.com.davidmag.bingewatcher.presentation.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -15,6 +16,7 @@ import br.com.davidmag.bingewatcher.presentation.adapter.GenreAdapter
 import br.com.davidmag.bingewatcher.presentation.common.*
 import br.com.davidmag.bingewatcher.presentation.common.decorator.HorizontalSpaceItemDecoration
 import br.com.davidmag.bingewatcher.presentation.di.presentationComponent
+import br.com.davidmag.bingewatcher.presentation.model.GenrePresentation
 import br.com.davidmag.bingewatcher.presentation.viewmodel.EpisodeViewModel
 import br.com.davidmag.bingewatcher.presentation.viewmodel.ShowViewModel
 import javax.inject.Inject
@@ -59,6 +61,7 @@ class ShowActivity : AppCompatActivity() {
 		GenreAdapter(applicationContext)
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(views.root)
@@ -101,14 +104,17 @@ class ShowActivity : AppCompatActivity() {
 			}
 
 			showFavorite.setOnClickListener {
+				showFavoriteFlipper.displayedChild = VIEW_LOADING
 				viewModel.favorite()
 			}
 
 			viewModel.favoriteState.observe(this@ShowActivity){
-				showFavorite.displayedChild = it
+				showFavoriteFlipper.displayedChild = VIEW_CONTENT
+				showFavorite.isSelected = it
 			}
 
 			viewModel.error.observe(this@ShowActivity) {
+				showFavoriteFlipper.displayedChild = VIEW_CONTENT
 				longToast(getString(it))
 			}
 
@@ -135,7 +141,7 @@ class ShowActivity : AppCompatActivity() {
 				showTitle.text = show.name
 				showTimeDays.text = show.subtitle
 
-				genreAdapter.items = show.genres
+				genreAdapter.items = show.genres.map { GenrePresentation(it) }
 				genreAdapter.notifyDataSetChanged()
 
 				seasonAdapter.clear()

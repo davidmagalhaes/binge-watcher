@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import br.com.davidmag.bingewatcher.app.R
+import br.com.davidmag.bingewatcher.domain.common.orFalse
 import br.com.davidmag.bingewatcher.domain.usecase.*
 import br.com.davidmag.bingewatcher.presentation.common.*
 import br.com.davidmag.bingewatcher.presentation.mapper.EpisodePresentationMapper
@@ -24,9 +25,6 @@ class ShowViewModel(
 
     companion object {
         const val ARG_SHOW = "showId"
-        const val FAVORITE_STATE_DISABLED = 0
-        const val FAVORITE_STATE_ENABLED = 1
-        const val FAVORITE_STATE_LOADING = 2
     }
 
     private var showId : Long = 0
@@ -34,7 +32,7 @@ class ShowViewModel(
 
     val show = MediatorLiveData<List<ShowPresentation>>()
     val episodes = MediatorLiveData<List<EpisodePresentation>>()
-    val favoriteState = MediatorLiveData<Int>()
+    val favoriteState = MediatorLiveData<Boolean>()
     val fatalError = MutableLiveData<ExceptionPresentation>()
     val error = MediatorLiveData<ExceptionPresentation>()
 
@@ -44,13 +42,9 @@ class ShowViewModel(
 
             getShowByIdUseCase.execute(showId)
                 .toPresentation(showMapper)
-                .doAfterNext { showList ->
-                    showList.firstOrNull {
-                        favoriteState.postValue(
-                            if(it.favored) FAVORITE_STATE_ENABLED else FAVORITE_STATE_DISABLED
-                        )
-                        true
-                    }
+                .map {
+                    favoriteState.postValue(it.firstOrNull()?.favored.orFalse())
+                    it
                 }
                 .toLiveData(show)
 
@@ -65,8 +59,7 @@ class ShowViewModel(
                         errorMessage = R.string.error_internet
                     )
                 }
-        }
-        catch (e : Exception) {
+        } catch (e : Exception) {
             Timber.e(e)
             fatalError.postValue(
                 ExceptionPresentation(
@@ -94,28 +87,19 @@ class ShowViewModel(
     }
 
     fun favorite() {
-        if(favoriteState.value != FAVORITE_STATE_LOADING) {
-            val lastValue = favoriteState.value
+        val lastValue = favoriteState.value.orFalse()
 
-            favoriteState.value = FAVORITE_STATE_LOADING
-
-            favoriteShowUseCase.execute(showId, lastValue != FAVORITE_STATE_ENABLED)
-                .map {
-                    when(lastValue){
-                        FAVORITE_STATE_ENABLED -> FAVORITE_STATE_DISABLED
-                        else -> FAVORITE_STATE_ENABLED
-                    }
-                }
-                .onErrorReturn { exception ->
-                    Timber.e(exception)
-                    error.postValue(ExceptionPresentation(
-                        exception = exception,
-                        errorMessage = R.string.generic_error,
-                        errorArgs = listOf(exception.message)
-                    ))
-                    lastValue
-                }
-                .toLiveData(favoriteState)
-        }
+        favoriteShowUseCase.execute(showId, lastValue)
+            .map { !lastValue }
+            .onErrorReturn { exception ->
+                Timber.e(exception)
+                error.postValue(ExceptionPresentation(
+                    exception = exception,
+                    errorMessage = R.string.generic_error,
+                    errorArgs = listOf(exception.message)
+                ))
+                lastValue
+            }
+            .toLiveData(favoriteState)
     }
 }

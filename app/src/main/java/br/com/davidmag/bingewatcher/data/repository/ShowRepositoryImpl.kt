@@ -14,7 +14,6 @@ import br.com.davidmag.bingewatcher.domain.common.orZero
 import br.com.davidmag.bingewatcher.domain.exception.ConnectionException
 import br.com.davidmag.bingewatcher.domain.exception.EntityNotFoundException
 import br.com.davidmag.bingewatcher.domain.model.Show
-import br.com.davidmag.bingewatcher.domain.repository.GenreRepository
 import br.com.davidmag.bingewatcher.domain.repository.ShowRepository
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -72,7 +71,7 @@ class ShowRepositoryImpl(
                     endOfPaginationReached = count.isZero()
                 )
             },
-            (if(favorite) favoredShowLocalDatasource.get(query)
+            ( if(favorite) favoredShowLocalDatasource.get(query)
             else showLocalDatasource.get(query)).asPagingSourceFactory(),
         ).flowable.cachedIn(GlobalScope)
     }

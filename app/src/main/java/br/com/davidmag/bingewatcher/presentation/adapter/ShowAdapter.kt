@@ -11,6 +11,7 @@ import br.com.davidmag.bingewatcher.GlideApp
 import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.app.databinding.ViewholderShowBinding
 import br.com.davidmag.bingewatcher.presentation.common.decorator.HorizontalSpaceItemDecoration
+import br.com.davidmag.bingewatcher.presentation.model.GenrePresentation
 import br.com.davidmag.bingewatcher.presentation.model.ShowPresentation
 
 class ShowAdapter (
@@ -78,7 +79,7 @@ class ShowViewHolder(
             views.showPremiere.text = premiered
             views.showGenres.adapter = GenreAdapter(
                 itemView.context.applicationContext,
-                showPresentation.genres
+                showPresentation.genres.map { GenrePresentation(it) }
             )
         }
     }
