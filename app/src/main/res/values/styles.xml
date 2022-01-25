@@ -3,6 +3,7 @@
 
     <style name="chipTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textSize">@dimen/small_text_size</item>
+        <item name="android:textColor">@color/textColorSecondary</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.ActionBar" >

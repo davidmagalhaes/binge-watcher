@@ -8,12 +8,15 @@ import kotlin.math.abs
 private const val DOUBLE_PIVOT = 0.00000001
 private const val DEF_DECIMAL_SCALE = 2
 
+val String.Companion.EMPTY
+    get() = ""
+
 fun Double?.isNullOrZero() = orZero().isZero()
 fun Double?.isNotNullOrZero() = orZero().isNotZero()
 fun Double?.orZero() = this ?: 0.0
 fun Double.isZero() = abs(this) < DOUBLE_PIVOT
 fun Double.isNotZero() = abs(this) >= DOUBLE_PIVOT
-fun Double.format(value: String): String = DecimalFormat(value).format(this)
+fun Double.decFormat(value: String): String = DecimalFormat(value).format(this)
 fun Double.scale(
     value: Int = DEF_DECIMAL_SCALE,
     roundingMode: RoundingMode = RoundingMode.HALF_EVEN
