@@ -15,11 +15,13 @@ class ViewModelModule {
     fun provideHomeViewModel(
         showPresentationMapper: ShowPresentationMapper,
         getShowUseCase: GetShowUseCase,
-        searchShowUseCase: SearchShowUseCase
+        searchShowUseCase: SearchShowUseCase,
+        getGenresUseCase: GetGenresUseCase
     ) = HomeViewModel(
         showPresentationMapper,
         getShowUseCase,
-        searchShowUseCase
+        searchShowUseCase,
+        getGenresUseCase
     )
 
     @Provides

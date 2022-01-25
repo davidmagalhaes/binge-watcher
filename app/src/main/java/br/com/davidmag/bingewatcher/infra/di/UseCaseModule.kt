@@ -1,7 +1,7 @@
 package br.com.davidmag.bingewatcher.infra.di
 
-import br.com.davidmag.bingewatcher.data.repository.ShowRepositoryImpl
 import br.com.davidmag.bingewatcher.domain.repository.EpisodeRepository
+import br.com.davidmag.bingewatcher.domain.repository.GenreRepository
 import br.com.davidmag.bingewatcher.domain.repository.ShowRepository
 import br.com.davidmag.bingewatcher.domain.usecase.*
 import dagger.Module
@@ -51,4 +51,10 @@ class UseCaseModule {
     fun provideGetShowByIdUseCase(
         showRepository: ShowRepository
     ) = GetShowByIdUseCase(showRepository)
+
+    @Singleton
+    @Provides
+    fun providesGetGenresUseCase(
+        genreRepository: GenreRepository
+    ) = GetGenresUseCase(genreRepository)
 }
