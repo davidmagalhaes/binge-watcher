@@ -27,6 +27,7 @@ The app is available on [Play Store](https://play.google.com/store/apps/details?
 - Offline caching
 - Infinite scrolling
 - Search series by name
+- Support to favorite movies
 
 #### Bonus
 
