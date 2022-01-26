@@ -29,10 +29,6 @@ The app is available on [Play Store](https://play.google.com/store/apps/details?
 - Search series by name
 - Support to favorite movies
 
-#### Bonus
-
-- Favorites
-
 #### Known issues
 - On the first run, the app may fail to update the screen and get stuck on the placeholders. A simple pull-to-refresh should solve it.
 - The app lacks a proper empty state view type.
