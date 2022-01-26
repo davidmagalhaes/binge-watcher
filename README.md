@@ -42,3 +42,4 @@ The app is available on [Play Store](https://play.google.com/store/apps/details?
 - Adding Unit Tests / Espresso tests
 - Some UX/UI improvements
 - Adding infinite scrolling to the episodes.
+- Adding integration with Firebase Crashlytics, Anaytics, Performance etc.
