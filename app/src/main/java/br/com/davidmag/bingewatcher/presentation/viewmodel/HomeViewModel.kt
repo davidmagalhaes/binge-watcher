@@ -37,7 +37,7 @@ class HomeViewModel(
     override fun init(args: Bundle?) {
         super.init(args)
 
-        submitSearch("beat")
+        submitSearch("")
 
         getGenresUseCase.execute()
             .map { genreList ->
@@ -64,6 +64,9 @@ class HomeViewModel(
         this.query.value = query
 
         fetchShowUseCase.execute(query)
+            .doFinally {
+                updateShows()
+            }
             .launchOn(errors) {
                 ExceptionPresentation(
                     exception = it,
@@ -71,8 +74,6 @@ class HomeViewModel(
                     errorArgs = listOf(it.message)
                 )
             }
-
-        updateShows()
     }
 
     fun onSearchChange(query: String){

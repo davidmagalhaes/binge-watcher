@@ -52,6 +52,7 @@ class ShowRepositoryImpl(
                     throw EntityNotFoundException("Show with id: $showId")
                 }
             }
+            .observeOn(appSchedulers.main())
     }
 
     @ExperimentalPagingApi
@@ -87,6 +88,7 @@ class ShowRepositoryImpl(
     override fun get(showId: Long): Flowable<List<Show>> {
         return showLocalDatasource.get(showId)
             .subscribeOn(appSchedulers.database())
+            .observeOn(appSchedulers.main())
     }
 
     override fun lookup(showId: Long): Maybe<Any> {
@@ -101,6 +103,7 @@ class ShowRepositoryImpl(
                 showLocalDatasource.append(it)
                     .subscribeOn(appSchedulers.database())
             }
+            .observeOn(appSchedulers.main())
     }
 
     override fun fetch(page: Int, query: String): Maybe<Long> {
@@ -125,6 +128,6 @@ class ShowRepositoryImpl(
                     ConnectionException(e)
                 else
                     e
-            }.count().toMaybe()
+            }.count().toMaybe().observeOn(appSchedulers.main())
     }
 }
