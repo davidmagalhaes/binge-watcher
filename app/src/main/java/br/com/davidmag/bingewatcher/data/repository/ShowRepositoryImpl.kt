@@ -1,6 +1,10 @@
 package br.com.davidmag.bingewatcher.data.repository
 
-import androidx.paging.*
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.RemoteMediator
 import androidx.paging.rxjava2.cachedIn
 import androidx.paging.rxjava2.flowable
 import br.com.davidmag.bingewatcher.data.scheduler.AppSchedulers
@@ -10,6 +14,7 @@ import br.com.davidmag.bingewatcher.data.source.local.contract.ShowLocalDatasour
 import br.com.davidmag.bingewatcher.data.source.remote.contract.ShowRemoteDatasource
 import br.com.davidmag.bingewatcher.data.source.remote.util.IntRemoteMediator
 import br.com.davidmag.bingewatcher.domain.common.isZero
+import br.com.davidmag.bingewatcher.domain.common.onErrorRethrow
 import br.com.davidmag.bingewatcher.domain.common.orZero
 import br.com.davidmag.bingewatcher.domain.exception.ConnectionException
 import br.com.davidmag.bingewatcher.domain.exception.EntityNotFoundException
@@ -29,6 +34,7 @@ class ShowRepositoryImpl(
     private val showRemoteDatasource: ShowRemoteDatasource,
     private val genreLocalDatasource: GenreLocalDatasource
 ) : ShowRepository {
+
     override fun favorite(showId: Long, favorite: Boolean): Maybe<Any> {
         return showLocalDatasource.get(showId)
             .subscribeOn(appSchedulers.database())
@@ -63,7 +69,7 @@ class ShowRepositoryImpl(
             ),
             1,
             IntRemoteMediator {
-                val count = fetch(it)
+                val count = fetch(it, query)
                     .await()
                     .orZero()
 
@@ -71,8 +77,10 @@ class ShowRepositoryImpl(
                     endOfPaginationReached = count.isZero()
                 )
             },
-            ( if(favorite) favoredShowLocalDatasource.get(query)
-            else showLocalDatasource.get(query)).asPagingSourceFactory(),
+            if(favorite)
+                favoredShowLocalDatasource.get(query).asPagingSourceFactory()
+            else
+                showLocalDatasource.get(query).asPagingSourceFactory(),
         ).flowable.cachedIn(GlobalScope)
     }
 
@@ -95,9 +103,11 @@ class ShowRepositoryImpl(
             }
     }
 
-    override fun fetch(page: Int): Maybe<Long> {
-        return showRemoteDatasource.fetch(page)
-            .subscribeOn(appSchedulers.network())
+    override fun fetch(page: Int, query: String): Maybe<Long> {
+        return when {
+            query.isEmpty() || query == "%%" -> showRemoteDatasource.fetch(page)
+            else -> showRemoteDatasource.search(query, page)
+        }.subscribeOn(appSchedulers.network())
             .flatMap { shows ->
                 val genres = shows.map { it.genres }.flatten().toHashSet().toList()
 
@@ -110,25 +120,11 @@ class ShowRepositoryImpl(
                     showLocalDatasource.append(it)
 
                 maybe.subscribeOn(appSchedulers.database())
-            }.onErrorReturn { e ->
+            }.onErrorRethrow { e ->
                 if(e is HttpException && e.code() == HttpURLConnection.HTTP_NOT_FOUND)
-                    throw ConnectionException(e)
+                    ConnectionException(e)
                 else
-                    throw e
-            }.count().toMaybe()
-    }
-
-    override fun search(query: String): Maybe<Long> {
-        return showRemoteDatasource.search(query)
-            .subscribeOn(appSchedulers.network())
-            .flatMap { shows ->
-                genreLocalDatasource.append(
-                    shows.map { it.genres }.flatten().toHashSet().toList()
-                ).subscribeOn(appSchedulers.database())
-                    .map { shows }
-            }.flatMap {
-                showLocalDatasource.append(it)
-                    .subscribeOn(appSchedulers.database())
+                    e
             }.count().toMaybe()
     }
 }

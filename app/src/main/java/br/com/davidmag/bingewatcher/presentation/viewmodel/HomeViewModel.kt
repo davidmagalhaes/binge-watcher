@@ -10,7 +10,7 @@ import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.domain.common.orFalse
 import br.com.davidmag.bingewatcher.domain.usecase.GetGenresUseCase
 import br.com.davidmag.bingewatcher.domain.usecase.GetShowUseCase
-import br.com.davidmag.bingewatcher.domain.usecase.SearchShowUseCase
+import br.com.davidmag.bingewatcher.domain.usecase.FetchShowUseCase
 import br.com.davidmag.bingewatcher.presentation.common.BaseViewModel
 import br.com.davidmag.bingewatcher.presentation.common.ExceptionPresentation
 import br.com.davidmag.bingewatcher.presentation.common.launchOn
@@ -22,7 +22,7 @@ import br.com.davidmag.bingewatcher.presentation.model.ShowPresentation
 class HomeViewModel(
     private val showPresentationMapper: ShowPresentationMapper,
     private val getShowUseCase: GetShowUseCase,
-    private val searchShowUseCase: SearchShowUseCase,
+    private val fetchShowUseCase: FetchShowUseCase,
     private val getGenresUseCase: GetGenresUseCase
 ) : BaseViewModel(){
 
@@ -41,13 +41,7 @@ class HomeViewModel(
 
         getGenresUseCase.execute()
             .map { genreList ->
-                val updatedGenres = genreList.map { GenrePresentation(it.id) }.toSet()
-
-                genres.value.orEmpty()
-                    .toSet()
-                    .intersect(updatedGenres)
-                    .union(updatedGenres)
-                    .toList()
+                genreList.map { GenrePresentation(it.id) }.toList()
             }
             .toLiveData(genres)
     }
@@ -69,7 +63,7 @@ class HomeViewModel(
     fun submitSearch(query: String) {
         this.query.value = query
 
-        searchShowUseCase.execute(query)
+        fetchShowUseCase.execute(query)
             .launchOn(errors) {
                 ExceptionPresentation(
                     exception = it,
