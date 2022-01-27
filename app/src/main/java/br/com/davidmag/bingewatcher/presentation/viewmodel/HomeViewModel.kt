@@ -37,7 +37,7 @@ class HomeViewModel(
     override fun init(args: Bundle?) {
         super.init(args)
 
-        submitSearch("")
+        submitSearch("beat")
 
         getGenresUseCase.execute()
             .map { genreList ->

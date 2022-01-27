@@ -7,7 +7,7 @@ import io.reactivex.Maybe
 
 interface ShowRepository {
     companion object {
-        const val DEFAULT_PAGE_SIZE = 250
+        const val DEFAULT_PAGE_SIZE = 20
         const val FIRST_PAGE = 1
     }
 
@@ -23,5 +23,5 @@ interface ShowRepository {
 
     fun lookup(showId : Long) : Maybe<Any>
 
-    fun fetch(page : Int = FIRST_PAGE, query: String = "") : Maybe<Long>
+    fun fetch(page : Int = FIRST_PAGE, query: String = "") : Maybe<Int>
 }

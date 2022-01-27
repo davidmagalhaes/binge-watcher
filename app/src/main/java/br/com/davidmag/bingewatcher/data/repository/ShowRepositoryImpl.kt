@@ -13,13 +13,12 @@ import br.com.davidmag.bingewatcher.data.source.local.contract.GenreLocalDatasou
 import br.com.davidmag.bingewatcher.data.source.local.contract.ShowLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.remote.contract.ShowRemoteDatasource
 import br.com.davidmag.bingewatcher.data.source.remote.util.IntRemoteMediator
-import br.com.davidmag.bingewatcher.domain.common.isZero
-import br.com.davidmag.bingewatcher.domain.common.onErrorRethrow
+import br.com.davidmag.bingewatcher.domain.common.onErrorMap
 import br.com.davidmag.bingewatcher.domain.common.orZero
-import br.com.davidmag.bingewatcher.domain.exception.ConnectionException
 import br.com.davidmag.bingewatcher.domain.exception.EntityNotFoundException
 import br.com.davidmag.bingewatcher.domain.model.Show
 import br.com.davidmag.bingewatcher.domain.repository.ShowRepository
+import br.com.davidmag.bingewatcher.domain.repository.ShowRepository.Companion.DEFAULT_PAGE_SIZE
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import kotlinx.coroutines.GlobalScope
@@ -75,7 +74,7 @@ class ShowRepositoryImpl(
                     .orZero()
 
                 RemoteMediator.MediatorResult.Success(
-                    endOfPaginationReached = count.isZero()
+                    endOfPaginationReached = count < DEFAULT_PAGE_SIZE
                 )
             },
             if(favorite)
@@ -106,7 +105,7 @@ class ShowRepositoryImpl(
             .observeOn(appSchedulers.main())
     }
 
-    override fun fetch(page: Int, query: String): Maybe<Long> {
+    override fun fetch(page: Int, query: String): Maybe<Int> {
         return when {
             query.isEmpty() || query == "%%" -> showRemoteDatasource.fetch(page)
             else -> showRemoteDatasource.search(query, page)
@@ -118,16 +117,16 @@ class ShowRepositoryImpl(
                     genreLocalDatasource.append(genres)
 
                 maybe.subscribeOn(appSchedulers.database()).map { shows }
-            }.flatMap {
-                val maybe = if(page == 1) showLocalDatasource.cache(it) else
-                    showLocalDatasource.append(it)
+            }.flatMap { shows ->
+                val maybe = if(page == 1) showLocalDatasource.cache(shows) else
+                    showLocalDatasource.append(shows)
 
-                maybe.subscribeOn(appSchedulers.database())
-            }.onErrorRethrow { e ->
+                maybe.subscribeOn(appSchedulers.database()).map { shows }
+            }.onErrorMap { e ->
                 if(e is HttpException && e.code() == HttpURLConnection.HTTP_NOT_FOUND)
-                    ConnectionException(e)
+                    emptyList()
                 else
-                    e
-            }.count().toMaybe().observeOn(appSchedulers.main())
+                    throw e
+            }.map { it.size }.observeOn(appSchedulers.main())
     }
 }
