@@ -18,7 +18,10 @@ interface ShowApi {
     fun lookup(@Path("id") showId : Long) : Maybe<@JvmSuppressWildcards ShowResponse>
 
     @GET("search/shows")
-    fun search(@Query("q") query : String) : Maybe<@JvmSuppressWildcards List<SearchResponse>>
+    fun search(
+        @Query("q") query : String,
+        @Query("page") page: Int
+    ) : Maybe<@JvmSuppressWildcards List<SearchResponse>>
 
     @GET("shows/{id}/seasons")
     fun seasons(@Path("id") showId : Long) : Maybe<@JvmSuppressWildcards List<SeasonResponse>>

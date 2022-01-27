@@ -26,7 +26,7 @@ class UseCaseModule {
     @Provides
     fun provideSearchShowUseCase(
         showRepository: ShowRepository
-    ) = SearchShowUseCase(showRepository)
+    ) = FetchShowUseCase(showRepository)
 
     @Singleton
     @Provides

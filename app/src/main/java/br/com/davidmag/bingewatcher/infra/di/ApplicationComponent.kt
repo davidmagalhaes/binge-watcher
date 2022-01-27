@@ -31,7 +31,7 @@ interface ApplicationComponent {
 
     fun okHttpUrlLoaderFactory() : OkHttpUrlLoader.Factory
     fun getShowUseCase() : GetShowUseCase
-    fun searchShowUseCase(): SearchShowUseCase
+    fun searchShowUseCase(): FetchShowUseCase
     fun getShowByIdUseCase(): GetShowByIdUseCase
     fun lookupShowUseCase() : LookupShowUseCase
     fun favoriteShowUseCase() : FavoriteShowUseCase
