@@ -13,8 +13,7 @@ class IntRemoteMediator(
     private val loadItems : suspend (Int) -> MediatorResult
 ) : RemoteMediator<Int, Show>() {
 
-    var currentPage = firstPage
-    var lastItemId : Int? = null
+    private var currentPage = firstPage
 
     override suspend fun load(
         loadType: LoadType,
@@ -39,13 +38,11 @@ class IntRemoteMediator(
                             endOfPaginationReached = false
                         )
                     } else {
-                        lastItemId = itemId
-                        currentPage + 1
+                        ++currentPage
                     }
                 }
             }
 
-            currentPage = nextPage
             return loadItems(nextPage)
         }
         catch (e : Exception){
