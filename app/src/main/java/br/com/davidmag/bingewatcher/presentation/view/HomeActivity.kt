@@ -59,6 +59,7 @@ class HomeActivity : AppCompatActivity() {
 			contentFlipper.displayedChild = VIEW_LOADING
 
 			swiper.setOnRefreshListener {
+				UiUtils.closeKeyboard(applicationContext, root)
 				viewModel.updateShows()
 			}
 
@@ -116,7 +117,6 @@ class HomeActivity : AppCompatActivity() {
 			viewModel.shows.observe(this@HomeActivity){
 				swiper.isRefreshing = false
 				adapter.submitData(this@HomeActivity.lifecycle, it)
-
 			}
 		}
 	}
