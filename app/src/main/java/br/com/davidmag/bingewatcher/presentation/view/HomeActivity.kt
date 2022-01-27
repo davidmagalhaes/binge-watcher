@@ -116,6 +116,7 @@ class HomeActivity : AppCompatActivity() {
 			viewModel.shows.observe(this@HomeActivity){
 				swiper.isRefreshing = false
 				adapter.submitData(this@HomeActivity.lifecycle, it)
+
 			}
 		}
 	}
