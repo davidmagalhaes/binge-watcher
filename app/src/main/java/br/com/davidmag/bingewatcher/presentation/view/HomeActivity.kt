@@ -3,6 +3,7 @@ package br.com.davidmag.bingewatcher.presentation.view
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
@@ -13,6 +14,7 @@ import br.com.davidmag.bingewatcher.presentation.common.getString
 import br.com.davidmag.bingewatcher.presentation.common.initViewModel
 import br.com.davidmag.bingewatcher.presentation.common.longToast
 import br.com.davidmag.bingewatcher.presentation.di.presentationComponent
+import br.com.davidmag.bingewatcher.presentation.util.UiUtils
 import br.com.davidmag.bingewatcher.presentation.viewmodel.HomeViewModel
 import br.com.davidmag.bingewatcher.presentation.viewmodel.ShowViewModel
 import javax.inject.Inject
@@ -84,6 +86,7 @@ class HomeActivity : AppCompatActivity() {
 
 			searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 				override fun onQueryTextSubmit(query: String?): Boolean {
+					UiUtils.closeKeyboard(applicationContext, root)
 					viewModel.submitSearch(query.orEmpty())
 					return true
 				}
