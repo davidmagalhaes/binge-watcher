@@ -14,7 +14,7 @@ runs:
         name: ${{ inputs.build_dir_name }}
     - name: Extracting build content
       shell: bash
-      run: unzip build.zip
+      run: unzip -o build.zip
     - name: Grant execute permission for gradlew
       shell: bash
       run: chmod +x gradlew
