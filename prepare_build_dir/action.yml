@@ -4,7 +4,7 @@ inputs:
   build_dir_name:
     description: 'name of the build_dir'
     required: false
-    default: 'build_dir'
+    default: 'build-dir'
 runs:
   using: "composite"
   steps:
