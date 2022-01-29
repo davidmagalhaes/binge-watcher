@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Preparing build dir
-        uses: ./prepare_build_dir
+        uses: ./action_prepare_build_dir
       - name: Run Lint
         run: ./gradlew lint
   unit-test:
@@ -36,6 +36,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Preparing build dir
-        uses: ./prepare_build_dir
+        uses: ./action_prepare_build_dir
       - name: Run Unit Tests
         run: ./gradlew test --stacktrace
