@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Getting build dir
-        uses: actions/binge-watcher@v1
+        uses: ./prepare_build_dir
       - name: Run Lint
         run: ./gradlew lint
   unit-test:
