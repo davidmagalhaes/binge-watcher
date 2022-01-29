@@ -1,5 +1,9 @@
 name: Android CI
-on: push
+on:
+  push:
+    branches:
+      - develop
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,8 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Preparing build dir
-        uses: ./action_prepare_build_dir
+      - name: Download build dir
+        uses: ./action_download_build_dir
       - name: Run Lint
         run: ./gradlew lint
   unit-test:
@@ -35,7 +39,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Preparing build dir
-        uses: ./action_prepare_build_dir
+      - name: Download build dir
+        uses: ./action_download_build_dir
       - name: Run Unit Tests
         run: ./gradlew test --stacktrace
+  upload-to-marketplace:
+    needs: [lint,unit-test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download build dir
+        uses: ./action_download_build_dir
+      - name: Build Release Bundle
+        run: ./gradlew bundleRelease --stacktrace
+      - name: Upload release bundle to marketplace
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ SERVICE_ACCOUNT_JSON }} #need to be created
+          packageName: br.com.davidmag.bingewatcher
+          releaseFiles: app/build/outputs/bundle/release/*.aab
+          track: production
+          inAppUpdatePriority: 2
+          userFraction: 0.1
+          whatsNewDirectory: distribution/whatsnew
+          mappingFile: app/build/outputs/mapping/release/mapping.txt
+
