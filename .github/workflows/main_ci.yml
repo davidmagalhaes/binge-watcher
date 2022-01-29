@@ -25,6 +25,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Getting build dir
         uses: ./prepare_build_dir
       - name: Run Lint
