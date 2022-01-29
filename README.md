@@ -30,7 +30,6 @@ The app is available on [Play Store](https://play.google.com/store/apps/details?
 - Support to favorite movies
 
 #### Known issues
-- On the first run, the app may fail to update the screen and get stuck on the placeholders. A simple pull-to-refresh should solve it.
 - The app lacks a proper empty state view type.
 - The episode list on the show details doesn't have a proper progress bar when loading.
 
