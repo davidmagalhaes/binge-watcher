@@ -13,26 +13,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build --stacktrace
-      - name: Persist to workspace
-        persist_to_workspace:
-          root: .
-          path:
-            - .
-  test:
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - attach_workspace:
-        at: .
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Run Unit Tests
-        run: ./gradlew test --stacktrace
-  generate-artifact:
-    needs: [test]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Compacting build workspace into zip
+      - name: Compacting build result
         run: zip -r build.zip .
       - name: Uploading build dir
         uses: actions/upload-artifact@v2
@@ -40,3 +21,17 @@ jobs:
           name: build-dir
           path: build.zip
           retention-days: 1
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Getting build dir
+        uses: actions/download-artifact@v2
+        with:
+          name: build-dir
+      - name: Extracting build content
+        run: unzip build.zip
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Run Unit Tests
+        run: ./gradlew test --stacktrace
