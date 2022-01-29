@@ -23,7 +23,6 @@ class PersistenceModule {
             LocalDatabase::class.java,
             "bingewatcher.db"
         ).fallbackToDestructiveMigration()
-            .allowMainThreadQueries()
             .build()
     }
 
