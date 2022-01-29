@@ -18,8 +18,9 @@ jobs:
       - name: Uploading build dir
         uses: actions/upload-artifact@v2
         with:
-          name: build-dir
-          path: build.zip
+          name: build-dir_${CIRCLE_WORKFLOW_ID}
+          path: build_dir.zip
+          retention-days: 1
   test:
     needs: [build]
     runs-on: ubuntu-latest
@@ -27,7 +28,7 @@ jobs:
       - name: Getting build dir
         uses: actions/download-artifact@v2
         with:
-          name: build-dir
+          name: build-dir_${CIRCLE_WORKFLOW_ID}
       - name: Extracting build content
         run: unzip build.zip
       - name: Grant execute permission for gradlew
