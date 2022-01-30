@@ -57,6 +57,7 @@ jobs:
         run: |
           echo "${{ secrets.KEYSTORE_CONTENT }}" >> keystore.jks.b64
           base64 -d -i keystore.jks.b64 > keystore.jks
+          rm -f keystore.jks.b64
       - name: Sign the release bundle
         run: |
           jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore keystore.jks \
@@ -72,6 +73,7 @@ jobs:
           track: production
           inAppUpdatePriority: 2
           userFraction: 0.1
+          status: inProgress
           whatsNewDirectory: distribution/whatsnew
 
 

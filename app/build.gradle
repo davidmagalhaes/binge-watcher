@@ -13,8 +13,8 @@ android {
         applicationId "br.com.davidmag.bingewatcher"
         minSdkVersion 23
         targetSdkVersion 31
-        versionCode 6
-        versionName "1.0.5"
+        versionCode 7
+        versionName "1.0.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
