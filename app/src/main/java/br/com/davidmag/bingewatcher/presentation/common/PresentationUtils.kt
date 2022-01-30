@@ -15,11 +15,11 @@ object PresentationUtils {
     fun <T> wrap(
         flowable: Flowable<T>,
         mediator: MediatorLiveData<PresentationObject>,
-        mediatorFailure: MutableLiveData<ExceptionWrapper>? = null,
+        mediatorFailure: MutableLiveData<ExceptionPresentation>? = null,
         removeAfterFirst: Boolean = false,
-        exceptionHandler : (Throwable) -> ExceptionWrapper = { ExceptionWrapper(it) }
+        exceptionHandler : (Throwable) -> ExceptionPresentation = { ExceptionPresentation(it) }
     ) {
-        val source = toLiveData(
+        val source = LiveDataReactiveStreams.fromPublisher(
             flowable.observeOn(AndroidSchedulers.mainThread())
                 .map {
                     PresentationWrapper(
@@ -33,10 +33,9 @@ object PresentationUtils {
                     exceptionHandler(it)
                 }
                 .map {
-                    if(it is ExceptionWrapper && mediatorFailure != null){
+                    if(it is ExceptionPresentation && mediatorFailure != null){
                         mediatorFailure.postValue(it)
-                    }
-                    else {
+                    } else {
                         mediator.postValue(it)
                     }
                 }
@@ -50,8 +49,8 @@ object PresentationUtils {
     fun submit(
         maybe: Maybe<Any>,
         mediator : MediatorLiveData<PresentationObject>,
-        mediatorFailure: MediatorLiveData<ExceptionWrapper>?,
-        exceptionHandler : (Throwable) -> ExceptionWrapper = { ExceptionWrapper(it) }
+        mediatorFailure: MediatorLiveData<ExceptionPresentation>?,
+        exceptionHandler : (Throwable) -> ExceptionPresentation = { ExceptionPresentation(it) }
     ) {
         wrap(
             maybe.toFlowable(),
@@ -64,8 +63,8 @@ object PresentationUtils {
 
     fun launchOn(
         maybe: Maybe<Any>,
-        mediatorFailure: MediatorLiveData<ExceptionWrapper>,
-        exceptionHandler : (Throwable) -> ExceptionWrapper = { ExceptionWrapper(it) }
+        mediatorFailure: MediatorLiveData<ExceptionPresentation>,
+        exceptionHandler : (Throwable) -> ExceptionPresentation = { ExceptionPresentation(it) }
     ) {
         val mediat = MediatorLiveData<PresentationObject>()
 

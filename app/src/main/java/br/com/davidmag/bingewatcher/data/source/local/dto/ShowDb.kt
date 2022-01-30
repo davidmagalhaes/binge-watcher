@@ -6,11 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.threeten.bp.LocalDate
 
-@Entity(
-    indices = [
-        Index(value = ["_show_id"])
-    ]
-)
+@Entity
 data class ShowDb (
     @PrimaryKey
     @ColumnInfo(name = "_show_id")
@@ -21,7 +17,6 @@ data class ShowDb (
     val backgroundImage : String?,
     val originalImage : String?,
     val mediumImage : String?,
-    val genres : List<String>,
     val seasonsIds : List<Long>,
     val summary : String,
     val status : String,

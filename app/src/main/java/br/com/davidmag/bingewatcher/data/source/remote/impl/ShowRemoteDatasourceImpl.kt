@@ -42,8 +42,8 @@ class ShowRemoteDatasourceImpl(
             }
     }
 
-    override fun search(query: String): Maybe<List<Show>> {
-        return showApi.search(query).map { searchResponses ->
+    override fun search(query: String, page : Int): Maybe<List<Show>> {
+        return showApi.search(query, page).map { searchResponses ->
             ShowRemoteMapper.toEntity(searchResponses.map { it.show })
         }
     }

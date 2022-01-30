@@ -2,11 +2,16 @@ package br.com.davidmag.bingewatcher.data.source.local.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import br.com.davidmag.bingewatcher.data.source.remote.dto.Posters
 import org.threeten.bp.LocalDate
 
-@Entity
+@Entity(
+    indices = [
+        Index(value = ["episode_show_id"])
+    ]
+)
 data class EpisodeDb (
     @PrimaryKey
     @ColumnInfo(name = "_episode_id")
