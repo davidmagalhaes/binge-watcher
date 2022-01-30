@@ -57,7 +57,7 @@ jobs:
         run: echo "${{ secrets.KEYSTORE_CONTENT }}" >> keystore.jks.b64
       - run: base64 -d -i keystore.jks.b64 > keystore.jks
       - name: Sign the binary file
-        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore keystore.jks -storetype jceks -storepass ${{ secrets.KEYSTORE_PASS }} -keypass ${{ secrets.KEYSTORE_KEY_PASS }} app-release.aab ${{ secrets.KEYSTORE_ALIAS }}
+        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore keystore.jks -storetype jceks -storepass ${{ secrets.KEYSTORE_PASS }} -keypass ${{ secrets.KEYSTORE_KEY_PASS }} app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEYSTORE_ALIAS }}
       - run : rm -f keystore.jks
       - name: Upload release bundle to marketplace
         uses: davidmagalhaes/upload-google-play@v1
