@@ -44,20 +44,22 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew test --stacktrace
   upload-to-marketplace:
-    needs: [build]
+    needs: [lint,unit-test]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
       - name: Download build dir
         uses: ./action_download_build_dir
-      - name: Build Release Bundle
+      - name: Build release bundle
         run: ./gradlew bundleRelease --stacktrace
       - name: Create keystore
-        run: echo "${{ secrets.KEYSTORE_CONTENT }}" >> keystore.jks.b64
+        run: |
+          echo "${{ secrets.KEYSTORE_CONTENT }}" >> keystore.jks.b64
           base64 -d -i keystore.jks.b64 > keystore.jks
-      - name: Sign the binary file
-        run: jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore keystore.jks \
+      - name: Sign the release bundle
+        run: |
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore keystore.jks \
           -storepass ${{ secrets.KEYSTORE_PASS }} -keypass ${{ secrets.KEYSTORE_KEY_PASS }} \
           app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEYSTORE_ALIAS }}
           rm -f keystore.jks
