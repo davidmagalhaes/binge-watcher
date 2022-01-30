@@ -49,7 +49,7 @@
             app:layout_constraintBottom_toTopOf="@id/show_title"/>
 
         <ViewFlipper
-            android:id="@+id/show_favorite"
+            android:id="@+id/show_favorite_flipper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/large_margin"
@@ -58,18 +58,16 @@
             app:layout_constraintBottom_toBottomOf="@id/show_rating" >
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/show_favorite"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@drawable/ic_baseline_favorite_border_24" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_baseline_favorite_24" />
+                android:src="@drawable/ic_favorite_selector" />
 
             <ProgressBar
+                android:indeterminate="true"
                 android:layout_width="32dp"
                 android:layout_height="32dp" />
+
         </ViewFlipper>
 
         <com.google.android.material.textview.MaterialTextView

@@ -3,8 +3,10 @@ package br.com.davidmag.bingewatcher.presentation.view
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import br.com.davidmag.bingewatcher.app.databinding.ActivityHomeBinding
 import br.com.davidmag.bingewatcher.presentation.adapter.ShowAdapter
 import br.com.davidmag.bingewatcher.presentation.common.decorator.VerticalSpaceItemDecoration
@@ -12,6 +14,7 @@ import br.com.davidmag.bingewatcher.presentation.common.getString
 import br.com.davidmag.bingewatcher.presentation.common.initViewModel
 import br.com.davidmag.bingewatcher.presentation.common.longToast
 import br.com.davidmag.bingewatcher.presentation.di.presentationComponent
+import br.com.davidmag.bingewatcher.presentation.util.UiUtils
 import br.com.davidmag.bingewatcher.presentation.viewmodel.HomeViewModel
 import br.com.davidmag.bingewatcher.presentation.viewmodel.ShowViewModel
 import javax.inject.Inject
@@ -43,6 +46,7 @@ class HomeActivity : AppCompatActivity() {
 		}
 	}
 
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(views.root)
@@ -51,12 +55,11 @@ class HomeActivity : AppCompatActivity() {
 
 		viewModel = initViewModel { viewModel }
 
-		viewModel.updateShows()
-
 		with(views) {
 			contentFlipper.displayedChild = VIEW_LOADING
 
 			swiper.setOnRefreshListener {
+				UiUtils.closeKeyboard(applicationContext, root)
 				viewModel.updateShows()
 			}
 
@@ -67,9 +70,16 @@ class HomeActivity : AppCompatActivity() {
 			})
 
 			homeRecycler.adapter = adapter
-			homeRecycler.addItemDecoration(VerticalSpaceItemDecoration(
-				applicationContext.resources
-			))
+			homeRecycler.addItemDecoration(
+				VerticalSpaceItemDecoration(applicationContext.resources)
+			)
+
+			homeRecycler.addOnScrollListener(object : OnScrollListener() {
+				override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+					super.onScrolled(recyclerView, dx, dy)
+					swiper.isEnabled = !homeRecycler.canScrollVertically(-1)
+				}
+			})
 
 			viewFavorites.setOnClickListener {
 				viewModel.showFavoritesClick()
@@ -77,6 +87,7 @@ class HomeActivity : AppCompatActivity() {
 
 			searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 				override fun onQueryTextSubmit(query: String?): Boolean {
+					UiUtils.closeKeyboard(applicationContext, root)
 					viewModel.submitSearch(query.orEmpty())
 					return true
 				}
@@ -96,7 +107,7 @@ class HomeActivity : AppCompatActivity() {
 			}
 
 			viewModel.favoriteState.observe(this@HomeActivity) {
-				viewFavorites.displayedChild = it
+				viewFavorites.isSelected = it
 			}
 
 			viewModel.errors.observe(this@HomeActivity){ exception ->

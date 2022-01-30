@@ -6,11 +6,11 @@ import br.com.davidmag.bingewatcher.domain.repository.ShowRepository
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 
-class SearchShowUseCase(
+class FetchShowUseCase(
     private val showRepository: ShowRepository
 ) {
     fun execute(query : String) : Maybe<Any> {
-        return showRepository.search(query)
+        return showRepository.fetch(query = query).map { Any() }
     }
 }
 

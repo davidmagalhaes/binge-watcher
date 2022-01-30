@@ -1,41 +1,53 @@
 package br.com.davidmag.bingewatcher.presentation.viewmodel
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.map
 import br.com.davidmag.bingewatcher.app.R
+import br.com.davidmag.bingewatcher.domain.common.orFalse
+import br.com.davidmag.bingewatcher.domain.usecase.GetGenresUseCase
 import br.com.davidmag.bingewatcher.domain.usecase.GetShowUseCase
-import br.com.davidmag.bingewatcher.domain.usecase.SearchShowUseCase
+import br.com.davidmag.bingewatcher.domain.usecase.FetchShowUseCase
 import br.com.davidmag.bingewatcher.presentation.common.BaseViewModel
-import br.com.davidmag.bingewatcher.presentation.common.ExceptionWrapper
+import br.com.davidmag.bingewatcher.presentation.common.ExceptionPresentation
 import br.com.davidmag.bingewatcher.presentation.common.launchOn
 import br.com.davidmag.bingewatcher.presentation.common.toLiveData
 import br.com.davidmag.bingewatcher.presentation.mapper.ShowPresentationMapper
+import br.com.davidmag.bingewatcher.presentation.model.GenrePresentation
 import br.com.davidmag.bingewatcher.presentation.model.ShowPresentation
 
 class HomeViewModel(
     private val showPresentationMapper: ShowPresentationMapper,
     private val getShowUseCase: GetShowUseCase,
-    private val searchShowUseCase: SearchShowUseCase
+    private val fetchShowUseCase: FetchShowUseCase,
+    private val getGenresUseCase: GetGenresUseCase
 ) : BaseViewModel(){
-
-    companion object {
-        const val FAVORITE_STATE_DISABLED = 0
-        const val FAVORITE_STATE_ENABLED = 1
-    }
 
     private var showsSource : LiveData<out PagingData<ShowPresentation>>? = null
 
     val query = MutableLiveData<String>()
     val shows = MediatorLiveData<PagingData<ShowPresentation>>()
-    val favoriteState = MutableLiveData<Int>()
-    val errors = MediatorLiveData<ExceptionWrapper>()
+    val genres = MediatorLiveData<List<GenrePresentation>>()
+    val favoriteState = MutableLiveData<Boolean>()
+    val errors = MediatorLiveData<ExceptionPresentation>()
+
+    override fun init(args: Bundle?) {
+        super.init(args)
+
+        submitSearch("beat")
+
+        getGenresUseCase.execute()
+            .map { genreList ->
+                genreList.map { GenrePresentation(it.id) }.toList()
+            }
+            .toLiveData(genres)
+    }
 
     fun updateShows(){
-        val isFavoriteEnabled = favoriteState.value == FAVORITE_STATE_ENABLED
+        val isFavoriteEnabled = favoriteState.value.orFalse()
         val queryString = "%${query.value.orEmpty()}%"
 
         showsSource?.let { shows.removeSource(it) }
@@ -51,16 +63,17 @@ class HomeViewModel(
     fun submitSearch(query: String) {
         this.query.value = query
 
-        searchShowUseCase.execute(query)
+        fetchShowUseCase.execute(query)
+            .doFinally {
+                updateShows()
+            }
             .launchOn(errors) {
-                ExceptionWrapper(
+                ExceptionPresentation(
                     exception = it,
                     errorMessage = R.string.generic_error,
                     errorArgs = listOf(it.message)
                 )
             }
-
-        updateShows()
     }
 
     fun onSearchChange(query: String){
@@ -71,11 +84,9 @@ class HomeViewModel(
     }
 
     fun showFavoritesClick(){
-        favoriteState.value = when(favoriteState.value){
-            FAVORITE_STATE_ENABLED -> FAVORITE_STATE_DISABLED
-            else -> FAVORITE_STATE_ENABLED
-        }
-
+        favoriteState.value = !favoriteState.value.orFalse()
         updateShows()
     }
 }
+
+
