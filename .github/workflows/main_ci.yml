@@ -75,5 +75,17 @@ jobs:
           userFraction: 0.1
           status: inProgress
           whatsNewDirectory: distribution/whatsnew
+      - name: Get current version
+        run : curVer=$(./gradlew --console plain -q pV)
+      - name: Create tag
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/$curVer',
+            sha: context.sha
+            })
 
 
