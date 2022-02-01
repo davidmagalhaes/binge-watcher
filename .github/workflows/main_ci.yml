@@ -17,6 +17,18 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build --stacktrace --exclude-task test --exclude-task lint
+      - name: Set app current version on env
+        run : echo "APP_CURVER=$(./gradlew --console plain -q pV)" >> $GITHUB_ENV
+      - name: Create tag
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/${{ env.APP_CURVER }}',
+            sha: context.sha
+            })
       - name: Compacting build result
         run: zip -r build.zip .
       - name: Uploading build dir
@@ -44,25 +56,13 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew test --stacktrace
   upload-to-marketplace:
-    needs: [build]
+    needs: [lint,unit-test]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:        
       - uses: actions/checkout@v2
       - name: Download build dir
         uses: ./action_download_build_dir
-      - name: Set app current version on env
-        run : echo "APP_CURVER=$(./gradlew --console plain -q pV)" >> $GITHUB_ENV
-      - name: Create tag
-        uses: actions/github-script@v5
-        with:
-          script: |
-            github.rest.git.createRef({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: 'refs/tags/${{ env.APP_CURVER }}',
-            sha: context.sha
-            })
       - name: Build release bundle
         run: ./gradlew bundleRelease --stacktrace
       - name: Create keystore
