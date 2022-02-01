@@ -60,7 +60,7 @@ jobs:
             github.rest.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: 'refs/tags/${{ APP_CURVER }}',
+            ref: 'refs/tags/${{ env.APP_CURVER }}',
             sha: context.sha
             })
       - name: Build release bundle
