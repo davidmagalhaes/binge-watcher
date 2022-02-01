@@ -17,18 +17,6 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build --stacktrace --exclude-task test --exclude-task lint
-      - name: Set app current version on env
-        run : echo "APP_CURVER=$(./gradlew --console plain -q pV)" >> $GITHUB_ENV
-      - name: Create tag
-        uses: actions/github-script@v5
-        with:
-          script: |
-            github.rest.git.createRef({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: 'refs/tags/${{ env.APP_CURVER }}',
-            sha: context.sha
-            })
       - name: Compacting build result
         run: zip -r build.zip .
       - name: Uploading build dir
@@ -87,5 +75,17 @@ jobs:
           userFraction: 0.1
           status: inProgress
           whatsNewDirectory: distribution/whatsnew
+      - name: Set app current version on env
+        run : echo "APP_CURVER=$(./gradlew --console plain -q pV)" >> $GITHUB_ENV
+      - name: Create tag
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/${{ env.APP_CURVER }}',
+            sha: context.sha
+            })
 
 
