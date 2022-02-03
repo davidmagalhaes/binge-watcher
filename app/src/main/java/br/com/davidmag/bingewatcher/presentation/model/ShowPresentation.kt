@@ -22,4 +22,16 @@ data class ShowPresentation(
     val favored : Boolean = false,
     val seasonsTitles : List<String> = emptyList(),
     val seasonsIds : List<Long> = emptyList()
-) : PresentationObject
+) : PresentationObject {
+    companion object {
+        fun loading() = ShowPresentation(
+            viewType = PresentationObject.VIEWTYPE_LOADING,
+            id = PresentationObject.VIEWTYPE_LOADING.toLong()
+        )
+
+        fun empty() = ShowPresentation(
+            viewType = PresentationObject.VIEWTYPE_EMPTY,
+            id = PresentationObject.VIEWTYPE_EMPTY.toLong()
+        )
+    }
+}

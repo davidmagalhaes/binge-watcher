@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import br.com.davidmag.bingewatcher.GlideApp
 import br.com.davidmag.bingewatcher.app.R
+import br.com.davidmag.bingewatcher.app.databinding.ShowContentShimmerBinding
 import br.com.davidmag.bingewatcher.app.databinding.ViewholderShowBinding
+import br.com.davidmag.bingewatcher.app.databinding.ViewholderShowEmptyBinding
+import br.com.davidmag.bingewatcher.presentation.common.PresentationObject
 import br.com.davidmag.bingewatcher.presentation.common.decorator.HorizontalSpaceItemDecoration
 import br.com.davidmag.bingewatcher.presentation.model.GenrePresentation
 import br.com.davidmag.bingewatcher.presentation.model.ShowPresentation
@@ -40,14 +43,26 @@ class ShowAdapter (
         }
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return getItem(position)?.viewType ?: PresentationObject.VIEWTYPE_CONTENT
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowViewHolder {
-        val views = ViewholderShowBinding.inflate(layoutInflater, parent, false)
+        return when(viewType) {
+            PresentationObject.VIEWTYPE_CONTENT -> {
+                val views = ViewholderShowBinding.inflate(layoutInflater, parent, false)
 
-        views.showGenres.addItemDecoration(
-            HorizontalSpaceItemDecoration(resources, R.dimen.small_margin)
-        )
+                views.showGenres.addItemDecoration(
+                    HorizontalSpaceItemDecoration(resources, R.dimen.small_margin)
+                )
 
-        return ShowViewHolder(views.root, clickListener)
+                ContentShowViewHolder(views.root, clickListener)
+            }
+            else -> {
+                val views = ViewholderShowEmptyBinding.inflate(layoutInflater, parent, false)
+                EmptyShowViewHolder(views.root)
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: ShowViewHolder, position: Int) {
@@ -55,12 +70,20 @@ class ShowAdapter (
     }
 }
 
-class ShowViewHolder(
-    itemView : View,
-    private val clickListener : (ShowPresentation) -> Unit
-) : RecyclerView.ViewHolder(itemView){
+abstract class ShowViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract fun bind(showPresentation: ShowPresentation)
+}
 
-    fun bind(showPresentation: ShowPresentation){
+class EmptyShowViewHolder(itemView: View) : ShowViewHolder(itemView) {
+    override fun bind(showPresentation: ShowPresentation) { }
+}
+
+class ContentShowViewHolder(
+    itemView : View,
+    private val clickListener : (ShowPresentation) -> Unit = { }
+) : ShowViewHolder(itemView) {
+
+    override fun bind(showPresentation: ShowPresentation){
         val views = ViewholderShowBinding.bind(itemView)
 
         itemView.setOnClickListener {

@@ -13,6 +13,7 @@ import br.com.davidmag.bingewatcher.data.source.local.contract.GenreLocalDatasou
 import br.com.davidmag.bingewatcher.data.source.local.contract.ShowLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.remote.contract.ShowRemoteDatasource
 import br.com.davidmag.bingewatcher.data.source.remote.util.IntRemoteMediator
+import br.com.davidmag.bingewatcher.domain.common.doBefore
 import br.com.davidmag.bingewatcher.domain.common.onErrorMap
 import br.com.davidmag.bingewatcher.domain.common.orZero
 import br.com.davidmag.bingewatcher.domain.exception.EntityNotFoundException

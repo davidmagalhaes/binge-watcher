@@ -11,3 +11,7 @@ fun <T> Maybe<T>.onErrorMap(mapper: (exc: Throwable) -> T) : Maybe<T> {
         }
     }
 }
+
+fun <T> Maybe<T>.doBefore(func: () -> Unit) : Maybe<T> {
+    return Maybe.fromCallable { func() }.flatMap { this }
+}

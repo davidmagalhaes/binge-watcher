@@ -3,8 +3,7 @@ package br.com.davidmag.bingewatcher.presentation.view
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import androidx.appcompat.widget.SearchView
+import android.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import br.com.davidmag.bingewatcher.app.databinding.ActivityHomeBinding
@@ -16,15 +15,11 @@ import br.com.davidmag.bingewatcher.presentation.common.longToast
 import br.com.davidmag.bingewatcher.presentation.di.presentationComponent
 import br.com.davidmag.bingewatcher.presentation.util.UiUtils
 import br.com.davidmag.bingewatcher.presentation.viewmodel.HomeViewModel
+import br.com.davidmag.bingewatcher.presentation.viewmodel.HomeViewModel.Companion.CONTENT_SHOW
 import br.com.davidmag.bingewatcher.presentation.viewmodel.ShowViewModel
 import javax.inject.Inject
 
 class HomeActivity : AppCompatActivity() {
-
-	companion object {
-		const val VIEW_CONTENT = 0
-		const val VIEW_LOADING = 1
-	}
 
 	@Inject
 	lateinit var viewModel : HomeViewModel
@@ -46,7 +41,6 @@ class HomeActivity : AppCompatActivity() {
 		}
 	}
 
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(views.root)
@@ -56,16 +50,18 @@ class HomeActivity : AppCompatActivity() {
 		viewModel = initViewModel { viewModel }
 
 		with(views) {
-			contentFlipper.displayedChild = VIEW_LOADING
-
 			swiper.setOnRefreshListener {
 				UiUtils.closeKeyboard(applicationContext, root)
 				viewModel.updateShows()
 			}
 
+			adapter.addLoadStateListener { loadState ->
+				viewModel.onLoadStatusChange(CONTENT_SHOW, loadState, adapter.itemCount)
+			}
+
 			adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
 				override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-					contentFlipper.displayedChild = VIEW_CONTENT
+					viewModel.contentLoaded(CONTENT_SHOW)
 				}
 			})
 
@@ -110,13 +106,17 @@ class HomeActivity : AppCompatActivity() {
 				viewFavorites.isSelected = it
 			}
 
-			viewModel.errors.observe(this@HomeActivity){ exception ->
-				longToast(getString(exception))
-			}
-
 			viewModel.shows.observe(this@HomeActivity){
 				swiper.isRefreshing = false
 				adapter.submitData(this@HomeActivity.lifecycle, it)
+			}
+
+			viewModel.loadingStatus.observe(this@HomeActivity) { loadingStatuses ->
+				contentFlipper.displayedChild = loadingStatuses.get(CONTENT_SHOW)
+			}
+
+			viewModel.errors.observe(this@HomeActivity){ exception ->
+				longToast(getString(exception))
 			}
 		}
 	}

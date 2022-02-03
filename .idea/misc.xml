@@ -11,7 +11,10 @@
         <entry key="app/src/main/res/layout/activity_show.xml" value="0.189209726443769" />
         <entry key="app/src/main/res/layout/activity_show_content.xml" value="0.189209726443769" />
         <entry key="app/src/main/res/layout/genre_chip.xml" value="0.3351449275362319" />
+        <entry key="app/src/main/res/layout/home_content_empty.xml" value="0.1933876811594203" />
+        <entry key="app/src/main/res/layout/show_content_shimmer.xml" value="0.22" />
         <entry key="app/src/main/res/layout/viewholder_show.xml" value="0.3351449275362319" />
+        <entry key="app/src/main/res/layout/viewholder_show_shimmer.xml" value="0.32135416666666666" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.21944444444444444" />
       </map>
     </option>

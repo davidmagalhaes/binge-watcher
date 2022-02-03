@@ -16,7 +16,7 @@ android {
         versionCode 7
         versionName "1.0.6"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "br.com.davidmag.bingewatcher.testcommons.CustomRunner"
 
         buildConfigField "String", "BASE_API_URL", "\"https://api.tvmaze.com/\""
         buildConfigField "Long", "NETWORK_TIMEOUT", "${5*60}L"
@@ -67,7 +67,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycleVer"
 
     //TIMBER (Logging and Monitoring)
-    implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'com.jakewharton.timber:timber:5.0.1'
 
     //STETHO (Monitoring lib)
     def stethoVer = '1.5.1'
@@ -126,4 +126,5 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.4.0'
 }

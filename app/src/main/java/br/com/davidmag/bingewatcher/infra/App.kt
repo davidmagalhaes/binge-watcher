@@ -9,8 +9,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import io.reactivex.plugins.RxJavaPlugins
 import timber.log.Timber
 
-class App  : Application() {
-
+open class App  : Application() {
     companion object  {
         lateinit var applicationComponent: ApplicationComponent
     }

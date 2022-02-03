@@ -40,13 +40,13 @@
                         android:layout_height="match_parent"
                         android:orientation="horizontal">
 
-                        <androidx.appcompat.widget.SearchView
+                        <android.widget.SearchView
                             android:id="@+id/searchView"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="match_parent"
-                            app:iconifiedByDefault="false"
-                            app:queryHint="@string/ui_home_menu_search_hint" />
+                            android:iconifiedByDefault="false"
+                            android:queryHint="@string/ui_home_menu_search_hint" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/view_favorites"
@@ -78,7 +78,8 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/viewholder_show" />
 
-            <include layout="@layout/home_content_shimmer" />
+            <include android:id="@+id/shimmer_root"
+                layout="@layout/show_content_shimmer" />
 
         </ViewFlipper>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
