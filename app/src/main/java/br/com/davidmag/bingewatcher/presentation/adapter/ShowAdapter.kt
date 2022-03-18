@@ -12,6 +12,7 @@ import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.app.databinding.ShowContentShimmerBinding
 import br.com.davidmag.bingewatcher.app.databinding.ViewholderShowBinding
 import br.com.davidmag.bingewatcher.app.databinding.ViewholderShowEmptyBinding
+import br.com.davidmag.bingewatcher.app.databinding.ViewholderShowLoadingBinding
 import br.com.davidmag.bingewatcher.presentation.common.PresentationObject
 import br.com.davidmag.bingewatcher.presentation.common.decorator.HorizontalSpaceItemDecoration
 import br.com.davidmag.bingewatcher.presentation.model.GenrePresentation
@@ -58,6 +59,10 @@ class ShowAdapter (
 
                 ContentShowViewHolder(views.root, clickListener)
             }
+            PresentationObject.VIEWTYPE_LOADING -> {
+                val views = ViewholderShowLoadingBinding.inflate(layoutInflater, parent, false)
+                LoadingShowViewHolder(views.root)
+            }
             else -> {
                 val views = ViewholderShowEmptyBinding.inflate(layoutInflater, parent, false)
                 EmptyShowViewHolder(views.root)
@@ -75,6 +80,10 @@ abstract class ShowViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
 }
 
 class EmptyShowViewHolder(itemView: View) : ShowViewHolder(itemView) {
+    override fun bind(showPresentation: ShowPresentation) { }
+}
+
+class LoadingShowViewHolder(itemView: View) : ShowViewHolder(itemView) {
     override fun bind(showPresentation: ShowPresentation) { }
 }
 

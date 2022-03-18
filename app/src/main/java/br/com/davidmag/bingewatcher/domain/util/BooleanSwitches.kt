@@ -2,7 +2,7 @@ package br.com.davidmag.bingewatcher.domain.util
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-class NamedBooleanSwitches(private val onSwitch: (String, Boolean)->Unit) {
+class BooleanSwitches(private val onSwitch: (String, Boolean)->Unit) {
     private val namedBooleans = mutableMapOf<String, AtomicBoolean>()
 
     fun switch(name: String, value: Boolean) {

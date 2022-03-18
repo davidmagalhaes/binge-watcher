@@ -15,7 +15,7 @@ class ShowLocalDatasourceImpl(
 ) : ShowLocalDatasource {
     override fun get(query : String) : DataSource.Factory<Int, Show> {
         return showDao.get(query).mapByPage {
-            ShowWithJoinsMapper. toEntity(it)
+            ShowWithJoinsMapper.toEntity(it)
         }
     }
 

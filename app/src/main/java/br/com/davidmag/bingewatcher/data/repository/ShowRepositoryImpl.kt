@@ -61,11 +61,11 @@ class ShowRepositoryImpl(
         favorite : Boolean,
         pageSize : Int
     ): Flowable<PagingData<Show>> {
-        return Pager(
+        val pager = Pager(
             PagingConfig(
                 pageSize = pageSize,
                 enablePlaceholders = false,
-                prefetchDistance = 10,
+                prefetchDistance = pageSize,
                 initialLoadSize = pageSize
             ),
             1,
@@ -83,6 +83,8 @@ class ShowRepositoryImpl(
             else
                 showLocalDatasource.get(query).asPagingSourceFactory(),
         ).flowable.cachedIn(GlobalScope)
+
+        return pager
     }
 
     override fun get(showId: Long): Flowable<List<Show>> {

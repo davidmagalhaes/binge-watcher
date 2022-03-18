@@ -2,7 +2,7 @@ package br.com.davidmag.bingewatcher.domain.util
 
 import java.util.concurrent.atomic.AtomicInteger
 
-class NamedIntSwitches(private val onSwitch: (String, Int)->Unit = {_, _ -> }) {
+class IntSwitches(private val onSwitch: (String, Int)->Unit = { _, _ -> }) {
     private val namedInts = mutableMapOf<String, AtomicInteger>()
 
     fun switch(name: String, value: Int) {

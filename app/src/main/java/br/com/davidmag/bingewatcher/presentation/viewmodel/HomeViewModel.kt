@@ -7,14 +7,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.TerminalSeparatorType
+import androidx.paging.filter
+import androidx.paging.insertFooterItem
+import androidx.paging.insertHeaderItem
 import androidx.paging.map
 import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.domain.common.orFalse
 import br.com.davidmag.bingewatcher.domain.usecase.GetGenresUseCase
 import br.com.davidmag.bingewatcher.domain.usecase.GetShowUseCase
 import br.com.davidmag.bingewatcher.domain.usecase.FetchShowUseCase
-import br.com.davidmag.bingewatcher.domain.util.NamedBooleanSwitches
-import br.com.davidmag.bingewatcher.domain.util.NamedIntSwitches
 import br.com.davidmag.bingewatcher.presentation.common.BaseViewModel
 import br.com.davidmag.bingewatcher.presentation.common.ExceptionPresentation
 import br.com.davidmag.bingewatcher.presentation.common.launchOn
@@ -22,6 +24,8 @@ import br.com.davidmag.bingewatcher.presentation.common.toLiveData
 import br.com.davidmag.bingewatcher.presentation.mapper.ShowPresentationMapper
 import br.com.davidmag.bingewatcher.presentation.model.GenrePresentation
 import br.com.davidmag.bingewatcher.presentation.model.ShowPresentation
+import kotlinx.coroutines.reactive.awaitLast
+import java.util.concurrent.TimeUnit
 
 class HomeViewModel(
     private val showPresentationMapper: ShowPresentationMapper,
@@ -32,23 +36,23 @@ class HomeViewModel(
 
     companion object {
         const val CONTENT_SHOW = "show"
-
-        const val CONTENT_LOADING = 1
-        const val CONTENT_READY = 0
+        const val CONTENT_STARTING = 1
+        const val CONTENT_STARTED = 0
     }
 
     private var showsSource : LiveData<out PagingData<ShowPresentation>>? = null
-    private var intSwitches = NamedIntSwitches()
 
     val query = MutableLiveData<String>()
     val shows = MediatorLiveData<PagingData<ShowPresentation>>()
     val genres = MediatorLiveData<List<GenrePresentation>>()
     val favoriteState = MutableLiveData<Boolean>()
 
-    val loadingStatus = MutableLiveData<NamedIntSwitches>()
+    var showStatus = CONTENT_STARTING
 
     override fun init(args: Bundle?) {
         super.init(args)
+
+        contentStarting(CONTENT_SHOW)
 
         submitSearch("")
 
@@ -59,7 +63,7 @@ class HomeViewModel(
             .toLiveData(genres)
     }
 
-    fun updateShows(){
+    fun updateShows() {
         contentLoading(CONTENT_SHOW)
         updateShowsInternal()
     }
@@ -70,7 +74,7 @@ class HomeViewModel(
         contentLoading(CONTENT_SHOW)
 
         fetchShowUseCase.execute(query)
-            .doFinally {
+            .doAfterSuccess {
                 updateShowsInternal()
             }
             .launchOn(errors) {
@@ -82,36 +86,32 @@ class HomeViewModel(
             }
     }
 
-    fun onSearchChange(query: String){
+    fun onSearchChange(query: String) {
         if(query.isEmpty()){
-            this.query.value = ""
-            updateShows()
+            submitSearch("")
         }
     }
 
-    fun showFavoritesClick(){
+    fun showFavoritesClick() {
         favoriteState.value = !favoriteState.value.orFalse()
         updateShows()
     }
 
     fun onLoadStatusChange(contentName: String, loadStatus: CombinedLoadStates, itemCount: Int) {
-        val isNotLoading = loadStatus.append is LoadState.NotLoading &&
-                loadStatus.prepend is LoadState.NotLoading &&
-                loadStatus.refresh is LoadState.NotLoading
-
-        if(isNotLoading) {
-            if(itemCount < 1) {
-                when(contentName) {
-                    CONTENT_SHOW ->
-                        shows.postValue(PagingData.from(listOf(ShowPresentation.empty())))
-                }
-            }
-        }
+        loadStatusChanged(
+            shows,
+            contentName,
+            ShowPresentation.loading(),
+            ShowPresentation.empty(),
+            loadStatus,
+            itemCount
+        )
     }
 
-    override fun onContentStatusChange(contentName: String, loading: Boolean) {
-        intSwitches.switch(contentName, if(loading) CONTENT_LOADING else CONTENT_READY )
-        loadingStatus.postValue(intSwitches)
+    override fun onContentReady(contentName: String): Boolean {
+        if(contentName == CONTENT_SHOW) showStatus = CONTENT_STARTED
+
+        return true
     }
 
     private fun updateShowsInternal() {
@@ -121,9 +121,10 @@ class HomeViewModel(
         showsSource?.let { shows.removeSource(it) }
         showsSource = getShowUseCase.execute(queryString, isFavoriteEnabled)
             .map { pagingData ->
-                pagingData.map {
-                    showPresentationMapper.parse(it).first()
-                }
+                pagingData
+                    .map {
+                        showPresentationMapper.parse(it).first()
+                    }
             }
             .toLiveData(shows)
     }

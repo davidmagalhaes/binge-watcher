@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +26,7 @@ class ShowActivity : AppCompatActivity() {
 
 	companion object {
 		const val VIEW_LOADING = 1
-		const val VIEW_CONTENT = 2
+		const val VIEW_READY = 2
 	}
 
 	@Inject
@@ -73,13 +74,15 @@ class ShowActivity : AppCompatActivity() {
 		views.contentFlipper.displayedChild = VIEW_LOADING
 
 		with(views.content) {
+			showSeasonFlipper.displayedChild = VIEW_LOADING
 			showGenres.adapter = genreAdapter
 			showGenres.addItemDecoration(HorizontalSpaceItemDecoration(resources))
 
 			showSeasonEpisodes.adapter = episodeAdapter
+
 			episodeAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-				override fun onChanged() {
-					views.contentFlipper.displayedChild = VIEW_CONTENT
+				override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+					showSeasonFlipper.displayedChild = VIEW_READY
 				}
 			})
 
@@ -109,12 +112,12 @@ class ShowActivity : AppCompatActivity() {
 			}
 
 			viewModel.favoriteState.observe(this@ShowActivity){
-				showFavoriteFlipper.displayedChild = VIEW_CONTENT
+				showFavoriteFlipper.displayedChild = VIEW_READY
 				showFavorite.isSelected = it
 			}
 
 			viewModel.error.observe(this@ShowActivity) {
-				showFavoriteFlipper.displayedChild = VIEW_CONTENT
+				showFavoriteFlipper.displayedChild = VIEW_READY
 				longToast(getString(it))
 			}
 
@@ -147,6 +150,8 @@ class ShowActivity : AppCompatActivity() {
 				seasonAdapter.clear()
 				seasonAdapter.addAll(show.seasonsTitles)
 				seasonAdapter.notifyDataSetChanged()
+
+				views.contentFlipper.displayedChild = VIEW_READY
 			}
 		}
 	}

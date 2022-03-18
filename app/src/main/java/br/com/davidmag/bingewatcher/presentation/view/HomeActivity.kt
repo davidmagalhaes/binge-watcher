@@ -6,12 +6,15 @@ import android.os.Bundle
 import android.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.app.databinding.ActivityHomeBinding
 import br.com.davidmag.bingewatcher.presentation.adapter.ShowAdapter
 import br.com.davidmag.bingewatcher.presentation.common.decorator.VerticalSpaceItemDecoration
 import br.com.davidmag.bingewatcher.presentation.common.getString
 import br.com.davidmag.bingewatcher.presentation.common.initViewModel
 import br.com.davidmag.bingewatcher.presentation.common.longToast
+import br.com.davidmag.bingewatcher.presentation.common.scrollToPositionAbsolute
+import br.com.davidmag.bingewatcher.presentation.common.shouldShow
 import br.com.davidmag.bingewatcher.presentation.di.presentationComponent
 import br.com.davidmag.bingewatcher.presentation.util.UiUtils
 import br.com.davidmag.bingewatcher.presentation.viewmodel.HomeViewModel
@@ -50,9 +53,17 @@ class HomeActivity : AppCompatActivity() {
 		viewModel = initViewModel { viewModel }
 
 		with(views) {
+			contentFlipper.displayedChild = viewModel.showStatus
+			fabBackToTop.hide()
+
 			swiper.setOnRefreshListener {
 				UiUtils.closeKeyboard(applicationContext, root)
 				viewModel.updateShows()
+			}
+
+			fabBackToTop.setOnClickListener {
+				appBar.setExpanded(true, true)
+				homeRecycler.scrollToPositionAbsolute(0)
 			}
 
 			adapter.addLoadStateListener { loadState ->
@@ -60,8 +71,8 @@ class HomeActivity : AppCompatActivity() {
 			}
 
 			adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-				override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-					viewModel.contentLoaded(CONTENT_SHOW)
+				override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+					viewModel.contentStarted(CONTENT_SHOW)
 				}
 			})
 
@@ -72,8 +83,8 @@ class HomeActivity : AppCompatActivity() {
 
 			homeRecycler.addOnScrollListener(object : OnScrollListener() {
 				override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-					super.onScrolled(recyclerView, dx, dy)
 					swiper.isEnabled = !homeRecycler.canScrollVertically(-1)
+					fabBackToTop.shouldShow = homeRecycler.canScrollVertically(-1)
 				}
 			})
 
@@ -94,7 +105,7 @@ class HomeActivity : AppCompatActivity() {
 			})
 
 			searchView.setOnCloseListener {
-				viewModel.updateShows()
+				viewModel.submitSearch("")
 				false
 			}
 
@@ -111,12 +122,12 @@ class HomeActivity : AppCompatActivity() {
 				adapter.submitData(this@HomeActivity.lifecycle, it)
 			}
 
-			viewModel.loadingStatus.observe(this@HomeActivity) { loadingStatuses ->
-				contentFlipper.displayedChild = loadingStatuses.get(CONTENT_SHOW)
-			}
-
 			viewModel.errors.observe(this@HomeActivity){ exception ->
 				longToast(getString(exception))
+			}
+
+			viewModel.contentReady.observe(this@HomeActivity) {
+				contentFlipper.displayedChild = viewModel.showStatus
 			}
 		}
 	}

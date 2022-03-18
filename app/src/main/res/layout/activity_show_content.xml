@@ -125,20 +125,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/show_genres"
-            app:layout_constraintBottom_toTopOf="@id/show_season_spinner_layout"
+            app:layout_constraintBottom_toTopOf="@id/show_season_flipper"
             tools:text="@tools:sample/lorem/random"
             tools:maxLines="10" />
 
         <FrameLayout
             android:id="@+id/show_season_spinner_layout"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="@dimen/large_margin"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/show_summary"
-            app:layout_constraintBottom_toTopOf="@id/show_season_episodes"
-            android:background="@color/colorPrimary" >
+            app:layout_constraintTop_toBottomOf="@id/show_summary" >
 
             <androidx.appcompat.widget.AppCompatSpinner
                 style="@style/Widget.AppCompat.Spinner"
@@ -150,23 +150,31 @@
 
         </FrameLayout>
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/show_season_episodes"
-            android:layout_width="match_parent"
+        <ViewFlipper
+            android:id="@+id/show_season_flipper"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:layout_marginBottom="@dimen/default_margin"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/show_season_spinner_layout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:listitem="@layout/viewholder_episode" />
+            app:layout_constraintTop_toBottomOf="@id/show_season_spinner_layout" >
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/show_season_episodes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_marginBottom="@dimen/default_margin"
+                tools:listitem="@layout/viewholder_episode"
+                tools:layout_height="300dp" />
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </ViewFlipper>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </ScrollView>
 
 

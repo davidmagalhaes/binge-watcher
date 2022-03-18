@@ -44,6 +44,7 @@
                             android:id="@+id/searchView"
                             android:layout_width="0dp"
                             android:layout_weight="1"
+                            android:queryBackground="@android:color/transparent"
                             android:layout_height="match_parent"
                             android:iconifiedByDefault="false"
                             android:queryHint="@string/ui_home_menu_search_hint" />
@@ -64,24 +65,47 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <ViewFlipper
-            android:id="@+id/content_flipper"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/home_recycler"
+            <ViewFlipper
+                android:id="@+id/content_flipper"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/viewholder_show" />
+                android:layout_height="match_parent" >
 
-            <include android:id="@+id/shimmer_root"
-                layout="@layout/show_content_shimmer" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/home_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/viewholder_show" />
 
-        </ViewFlipper>
+                <include android:id="@+id/shimmer_root"
+                    layout="@layout/show_content_shimmer" />
+
+            </ViewFlipper>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_back_to_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/content_flipper"
+                android:layout_alignEnd="@id/content_flipper"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                app:fabSize="mini"
+                android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
+                app:tint="@android:color/black"
+                app:backgroundTint="@color/colorAccent"
+                android:alpha="0.6" />
+
+        </RelativeLayout>
+
+
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

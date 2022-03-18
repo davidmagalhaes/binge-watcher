@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 

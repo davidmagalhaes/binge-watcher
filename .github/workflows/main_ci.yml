@@ -16,7 +16,7 @@ jobs:
       - name: Grant execution permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew build --stacktrace --exclude-task test --exclude-task lint
+        run: ./gradlew build --no-daemon --stacktrace --exclude-task test --exclude-task lint
       - name: Compacting build result
         run: zip -r build.zip .
       - name: Uploading build dir
@@ -33,7 +33,7 @@ jobs:
       - name: Download build dir
         uses: ./action_download_build_dir
       - name: Run Lint
-        run: ./gradlew lint
+        run: ./gradlew --no-daemon lint
   unit-test:
     needs: [build]
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
       - name: Download build dir
         uses: ./action_download_build_dir
       - name: Run Unit Tests
-        run: ./gradlew test --stacktrace
+        run: ./gradlew test --no-daemon --stacktrace
   upload-to-marketplace:
     needs: [lint,unit-test]
     runs-on: ubuntu-latest
@@ -52,7 +52,7 @@ jobs:
       - name: Download build dir
         uses: ./action_download_build_dir
       - name: Build release bundle
-        run: ./gradlew bundleRelease --stacktrace
+        run: ./gradlew --no-daemon bundleRelease --stacktrace
       - name: Create keystore
         run: |
           echo "${{ secrets.KEYSTORE_CONTENT }}" >> keystore.jks.b64

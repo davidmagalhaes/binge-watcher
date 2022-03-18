@@ -18,7 +18,7 @@ object EspressoIdlingResource : Timber.Tree(){
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         when(tag) {
             LogTags.UI_CONTENT_LOADING -> counting.increment()
-            LogTags.UI_CONTENT_LOADED -> if(!counting.isIdleNow) counting.decrement()
+            LogTags.UI_CONTENT_READY -> if(!counting.isIdleNow) counting.decrement()
         }
     }
 }
