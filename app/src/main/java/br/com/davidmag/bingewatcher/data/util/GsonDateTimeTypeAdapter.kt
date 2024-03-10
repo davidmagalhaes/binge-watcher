@@ -1,12 +1,10 @@
 package br.com.davidmag.bingewatcher.data.util
 
 import com.google.gson.*
-import org.threeten.bp.DateTimeUtils
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import java.lang.reflect.Type
 import java.text.ParseException
-import java.text.SimpleDateFormat
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 object GsonDateTimeTypeAdapter : JsonSerializer<OffsetDateTime>, JsonDeserializer<OffsetDateTime> {

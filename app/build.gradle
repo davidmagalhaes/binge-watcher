@@ -6,8 +6,8 @@ plugins {
 }
 
 android {
-    compileSdk 33
-    buildToolsVersion "33.0.1"
+    compileSdk 34
+    buildToolsVersion "34.0.0"
 
     def versionMajor = 1
     def versionMinor = 1
@@ -16,7 +16,7 @@ android {
     defaultConfig {
         applicationId "br.com.davidmag.bingewatcher"
         minSdkVersion 28
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode versionMajor*10000 + versionMinor*100 + versionPatch
         versionName "$versionMajor.$versionMinor.$versionPatch"
 
@@ -46,15 +46,14 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'br.com.davidmag.bingewatcher.app'
 }
 
 dependencies {
 
     //KOTLIN
-    implementation 'androidx.core:core-ktx:1.7.0'
-
-    //THREETENBP (Date and time handling)
-    implementation "com.jakewharton.threetenabp:threetenabp:1.0.3"
+    implementation 'androidx.core:core-ktx:1.12.0'
+    kapt "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0"
 
     //SUPPORT
     implementation "androidx.fragment:fragment-ktx:1.2.5"
@@ -69,8 +68,8 @@ dependencies {
     def lifecycleVer = '2.2.0'
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVer"
     kapt "androidx.lifecycle:lifecycle-common-java8:$lifecycleVer"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVer"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycleVer"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.5.1"
 
     //TIMBER (Logging and Monitoring)
     implementation 'com.jakewharton.timber:timber:4.7.1'
@@ -81,10 +80,10 @@ dependencies {
     implementation "com.facebook.stetho:stetho-okhttp3:$stethoVer"
 
     //RXJAVA (Asynchronism and reactiveness)
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation("io.reactivex.rxjava2:rxkotlin:2.4.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.4.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.7.1")
 
     //PAGING
     def paging_version = "3.0.0-alpha12"
@@ -103,7 +102,7 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVer"
 
     //ROOM (SQLite ORM)
-    def roomVer = "2.2.6"
+    def roomVer = "2.6.1"
     implementation "androidx.room:room-runtime:$roomVer"
     implementation "androidx.room:room-common:$roomVer"
     implementation "androidx.room:room-rxjava2:$roomVer"
@@ -122,9 +121,9 @@ dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
     //DAGGER2
-    def daggerVer = "2.35.1"
-    implementation "com.google.dagger:dagger:$daggerVer"
-    implementation "com.google.dagger:dagger-android:$daggerVer"
+    def daggerVer = "2.45"
+    implementation "com.google.dagger:dagger:2.50"
+    implementation "com.google.dagger:dagger-android:2.48"
     implementation "com.google.dagger:dagger-android-support:$daggerVer"
     kapt "com.google.dagger:dagger-android-processor:$daggerVer"
     kapt "com.google.dagger:dagger-compiler:$daggerVer"

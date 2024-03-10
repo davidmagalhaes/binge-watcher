@@ -2,9 +2,8 @@ package br.com.davidmag.bingewatcher.data.source.local.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.threeten.bp.LocalDate
+import java.time.LocalDate
 
 @Entity
 data class ShowDb (

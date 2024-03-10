@@ -14,11 +14,11 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.threeten.bp.LocalDate
-import org.threeten.bp.OffsetDateTime
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
