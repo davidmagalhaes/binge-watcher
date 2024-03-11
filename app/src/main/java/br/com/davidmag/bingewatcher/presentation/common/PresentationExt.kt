@@ -41,7 +41,7 @@ inline fun <reified T: ViewModel> _initViewModel(
     crossinline factory: () -> T
 ): T = T::class.java.let { clazz ->
     ViewModelProvider(owner, object: ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if(modelClass == clazz) {
                 @Suppress("UNCHECKED_CAST")
                 val viewModel = factory() as T

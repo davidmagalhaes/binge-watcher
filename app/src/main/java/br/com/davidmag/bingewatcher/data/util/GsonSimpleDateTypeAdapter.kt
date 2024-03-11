@@ -1,10 +1,10 @@
 package br.com.davidmag.bingewatcher.data.util
 
 import com.google.gson.*
-import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
 import java.lang.reflect.Type
 import java.text.ParseException
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 object GsonSimpleDateTypeAdapter : JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
     @Throws(JsonParseException::class)

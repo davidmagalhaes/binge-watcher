@@ -4,8 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import br.com.davidmag.bingewatcher.data.source.remote.dto.Posters
-import org.threeten.bp.LocalDate
+import java.time.LocalDate
 
 @Entity(
     indices = [

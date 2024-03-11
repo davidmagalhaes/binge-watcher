@@ -1,6 +1,6 @@
 package br.com.davidmag.bingewatcher.data.source.remote.dto
 
-import org.threeten.bp.LocalDate
+import java.time.LocalDate
 
 data class EpisodeResponse (
     val id : Long,

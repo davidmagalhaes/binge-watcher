@@ -4,9 +4,9 @@ import androidx.room.TypeConverter
 import br.com.davidmag.bingewatcher.data.util.GsonDateTimeTypeAdapter
 import br.com.davidmag.bingewatcher.data.util.GsonSimpleDateTypeAdapter
 import com.google.gson.GsonBuilder
-import org.threeten.bp.LocalDate
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.LocalDate
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 object RoomConverters {
     private val localDateFormatter = DateTimeFormatter.ISO_DATE

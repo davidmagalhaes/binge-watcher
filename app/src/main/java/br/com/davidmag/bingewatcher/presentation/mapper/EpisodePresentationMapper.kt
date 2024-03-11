@@ -1,14 +1,13 @@
 package br.com.davidmag.bingewatcher.presentation.mapper
 
 import android.content.res.Resources
-import android.text.Html
 import androidx.core.text.HtmlCompat
 import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.domain.model.Episode
 import br.com.davidmag.bingewatcher.presentation.common.PresentationMapper
 import br.com.davidmag.bingewatcher.presentation.common.PresentationObject
 import br.com.davidmag.bingewatcher.presentation.model.EpisodePresentation
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter
 
 class EpisodePresentationMapper(
 	private val resources: Resources
@@ -23,7 +22,8 @@ class EpisodePresentationMapper(
 					subtitle = resources.getString(
 						R.string.episode_subtitle_format,
 						season, number,
-						premiered?.format(DateTimeFormatter.ofPattern(
+						premiered?.format(
+							DateTimeFormatter.ofPattern(
 							resources.getString(R.string.show_premiered_format))).orEmpty()
 					),
 					season = season.toString(),

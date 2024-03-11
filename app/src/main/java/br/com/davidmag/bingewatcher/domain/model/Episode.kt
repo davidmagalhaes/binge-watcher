@@ -1,6 +1,6 @@
 package br.com.davidmag.bingewatcher.domain.model
 
-import org.threeten.bp.LocalDate
+import java.time.LocalDate
 
 data class Episode (
     val id : Long,

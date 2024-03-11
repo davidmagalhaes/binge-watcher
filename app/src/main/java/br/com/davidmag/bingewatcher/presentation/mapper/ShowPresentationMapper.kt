@@ -7,7 +7,7 @@ import br.com.davidmag.bingewatcher.domain.model.Show
 import br.com.davidmag.bingewatcher.presentation.common.PresentationMapper
 import br.com.davidmag.bingewatcher.presentation.common.PresentationObject
 import br.com.davidmag.bingewatcher.presentation.model.ShowPresentation
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter
 
 class ShowPresentationMapper(
     private val resources: Resources

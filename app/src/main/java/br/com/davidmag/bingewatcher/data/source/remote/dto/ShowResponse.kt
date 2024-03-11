@@ -1,7 +1,7 @@
 package br.com.davidmag.bingewatcher.data.source.remote.dto
 
 import com.google.gson.annotations.SerializedName
-import org.threeten.bp.LocalDate
+import java.time.LocalDate
 
 data class SearchResponse (
 	val score : Double,

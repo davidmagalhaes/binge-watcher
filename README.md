@@ -19,7 +19,6 @@ The app is available on [Play Store](https://play.google.com/store/apps/details?
 - Glide
 - Dagger2
 - Timber
-- ThreetenBp
 
 #### Features
 

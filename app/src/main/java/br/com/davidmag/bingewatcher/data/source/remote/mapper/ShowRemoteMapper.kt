@@ -4,7 +4,6 @@ import br.com.davidmag.bingewatcher.data.common.EntityMapper
 import br.com.davidmag.bingewatcher.data.source.remote.dto.ShowResponse
 import br.com.davidmag.bingewatcher.domain.model.Genre
 import br.com.davidmag.bingewatcher.domain.model.Show
-import org.threeten.bp.LocalDate
 
 object ShowRemoteMapper : EntityMapper<Show, ShowResponse> {
     override val toDtoMapper: (Show) -> ShowResponse

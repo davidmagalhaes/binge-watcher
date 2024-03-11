@@ -70,7 +70,7 @@ class ShowRepositoryImpl(
             1,
             IntRemoteMediator {
                 val count = fetch(it, query)
-                    .await()
+                    .blockingGet()
                     .orZero()
 
                 RemoteMediator.MediatorResult.Success(
