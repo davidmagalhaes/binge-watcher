@@ -47,7 +47,7 @@ jobs:
     needs: [lint,unit-test]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    steps:
+    steps:        
       - uses: actions/checkout@v2
       - name: Download build dir
         uses: ./action_download_build_dir
@@ -75,5 +75,17 @@ jobs:
           userFraction: 0.1
           status: inProgress
           whatsNewDirectory: distribution/whatsnew
+      - name: Set app current version on env
+        run : echo "APP_CURVER=$(./gradlew --console plain -q pV)" >> $GITHUB_ENV
+      - name: Create tag
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/${{ env.APP_CURVER }}',
+            sha: context.sha
+            })
 
 
