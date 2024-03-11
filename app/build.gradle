@@ -111,7 +111,7 @@ dependencies {
 
     //GLIDE
     def glideVer = "4.11.0"
-    implementation "com.github.bumptech.glide:glide:$glideVer"
+    implementation "com.github.bumptech.glide:glide:4.16.0"
     implementation ("com.github.bumptech.glide:okhttp3-integration:$glideVer") {
         exclude group: 'glide-parent'
     }
@@ -128,7 +128,7 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$daggerVer"
     kapt "com.google.dagger:dagger-compiler:$daggerVer"
 
-    testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
