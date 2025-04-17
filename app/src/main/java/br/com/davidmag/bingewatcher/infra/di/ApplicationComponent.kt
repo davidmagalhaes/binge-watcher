@@ -6,16 +6,22 @@ import br.com.davidmag.bingewatcher.infra.App
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import dagger.BindsInstance
 import dagger.Component
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [
+    CommonsModule::class,
     PersistenceModule::class,
     NetworkModule::class,
     DatasourceModule::class,
     RepositoryModule::class,
     UseCaseModule::class
 ])
+@InstallIn(SingletonComponent::class)
+@EntryPoint
 interface ApplicationComponent {
 
     @Component.Builder

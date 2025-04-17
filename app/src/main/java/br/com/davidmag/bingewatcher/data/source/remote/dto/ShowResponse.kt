@@ -17,7 +17,14 @@ data class ShowResponse (
 	val summary : String?,
 	val status : String,
 	val rating : ShowRating?,
-	val premiered : LocalDate?
+	val premiered : LocalDate?,
+
+	@Transient
+	var seasonsIds: List<Long>? = null,
+	@Transient
+	var images : List<String>? = null,
+	@Transient
+	var imageBackgroundUrl : String? = null
 )
 
 data class ShowSchedule(

@@ -3,7 +3,7 @@ package br.com.davidmag.bingewatcher.infra.di
 import br.com.davidmag.bingewatcher.data.repository.EpisodeRepositoryImpl
 import br.com.davidmag.bingewatcher.data.repository.GenreRepositoryImpl
 import br.com.davidmag.bingewatcher.data.repository.ShowRepositoryImpl
-import br.com.davidmag.bingewatcher.data.scheduler.AppSchedulers
+import br.com.davidmag.bingewatcher.data.scheduler.AppDispatchers
 import br.com.davidmag.bingewatcher.data.source.local.contract.EpisodeLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.local.contract.FavoredShowLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.local.contract.GenreLocalDatasource
@@ -15,20 +15,24 @@ import br.com.davidmag.bingewatcher.domain.repository.GenreRepository
 import br.com.davidmag.bingewatcher.domain.repository.ShowRepository
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import dagger.hilt.migration.DisableInstallInCheck
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 class RepositoryModule {
     @Singleton
     @Provides
     fun provideShowRepository(
-        appSchedulers: AppSchedulers,
+        appDispatchers: AppDispatchers,
         showLocalDatasource: ShowLocalDatasource,
         favoredShowLocalDatasource: FavoredShowLocalDatasource,
         showRemoteDatasource: ShowRemoteDatasource,
         genreLocalDatasource: GenreLocalDatasource
     ) : ShowRepository = ShowRepositoryImpl(
-        appSchedulers,
+        appDispatchers,
         showLocalDatasource,
         favoredShowLocalDatasource,
         showRemoteDatasource,
@@ -38,11 +42,11 @@ class RepositoryModule {
     @Singleton
     @Provides
     fun provideEpisodeRepository(
-        appSchedulers: AppSchedulers,
+        appDispatchers: AppDispatchers,
         episodeRemoteDatasource: EpisodeRemoteDatasource,
         episodeLocalDatasource: EpisodeLocalDatasource
     ) : EpisodeRepository = EpisodeRepositoryImpl(
-        appSchedulers,
+        appDispatchers,
         episodeRemoteDatasource,
         episodeLocalDatasource
     )

@@ -3,31 +3,26 @@ package br.com.davidmag.bingewatcher.data.source.local.impl
 import br.com.davidmag.bingewatcher.data.source.local.contract.EpisodeLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.local.dao.EpisodeDao
 import br.com.davidmag.bingewatcher.data.source.local.mapper.EpisodeLocalMapper
-import br.com.davidmag.bingewatcher.data.source.remote.mapper.EpisodeRemoteMapper
 import br.com.davidmag.bingewatcher.domain.model.Episode
-import io.reactivex.Flowable
-import io.reactivex.Maybe
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class EpisodeLocalDatasourceImpl(
     private val episodeDao: EpisodeDao
 ) : EpisodeLocalDatasource {
-    override fun get(showId : Long): Flowable<List<Episode>> {
+    override fun get(showId : Long): Flow<List<Episode>> {
         return episodeDao.get(showId).map {
             EpisodeLocalMapper.toEntity(it)
         }
     }
 
-    override fun append(episodes: List<Episode>): Maybe<Any> {
-        return episodeDao.upsert(
-            EpisodeLocalMapper.toDto(episodes)
-        ).map {  }
+    override suspend fun append(episodes: List<Episode>) {
+        episodeDao.upsert(EpisodeLocalMapper.toDto(episodes))
     }
 
-    override fun cache(episodes: List<Episode>): Maybe<Any> {
-        return Maybe.fromCallable {
-            episodeDao.cache(
-                *EpisodeLocalMapper.toDto(episodes).toTypedArray()
-            )
-        }
+    override suspend fun cache(episodes: List<Episode>) {
+        episodeDao.cache(
+            *EpisodeLocalMapper.toDto(episodes).toTypedArray()
+        )
     }
 }

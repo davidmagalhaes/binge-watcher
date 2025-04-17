@@ -1,8 +1,8 @@
 package br.com.davidmag.bingewatcher.presentation.viewmodel
 
 import android.os.Bundle
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.viewModelScope
 import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.domain.common.orFalse
 import br.com.davidmag.bingewatcher.domain.usecase.*
@@ -11,9 +11,13 @@ import br.com.davidmag.bingewatcher.presentation.mapper.EpisodePresentationMappe
 import br.com.davidmag.bingewatcher.presentation.mapper.ShowPresentationMapper
 import br.com.davidmag.bingewatcher.presentation.model.EpisodePresentation
 import br.com.davidmag.bingewatcher.presentation.model.ShowPresentation
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class ShowViewModel(
+class ShowViewModel @Inject constructor(
     private val showMapper: ShowPresentationMapper,
     private val episodeMapper : EpisodePresentationMapper,
     private val getShowByIdUseCase: GetShowByIdUseCase,
@@ -23,83 +27,86 @@ class ShowViewModel(
     private val getEpisodesUseCase : GetEpisodesUseCase
 ) : BaseViewModel() {
 
-    companion object {
-        const val ARG_SHOW = "showId"
-    }
-
     private var showId : Long = 0
     private var selectedSeason = 0
 
-    val show = MediatorLiveData<List<ShowPresentation>>()
-    val episodes = MediatorLiveData<List<EpisodePresentation>>()
-    val favoriteState = MediatorLiveData<Boolean>()
-    val fatalError = MutableLiveData<ExceptionPresentation>()
-    val error = MediatorLiveData<ExceptionPresentation>()
+    val show = mutableStateOf<List<ShowPresentation>>(emptyList())
+    val episodes = mutableStateOf<PresentationResult<List<EpisodePresentation>>>(PresentationResult.ResultLoading())
+    val favoriteState = mutableStateOf<PresentationResult<Boolean>>(PresentationResult.ResultLoading())
+    val fatalError = mutableStateOf<ErrorPresentation?>(null)
+    val error = mutableStateOf<ErrorPresentation?>(null)
 
     override fun init(args: Bundle?) {
         try {
             showId = args?.getLong(ARG_SHOW) ?: error("missing argument: $ARG_SHOW")
 
             getShowByIdUseCase.execute(showId)
-                .toPresentation(showMapper)
-                .map {
-                    favoriteState.postValue(it.firstOrNull()?.favored.orFalse())
-                    it
+                .mapToPresentation(showMapper)
+                .launchAndCollect(viewModelScope) {
+                    if (it is PresentationResult.ResultSuccess) {
+                        favoriteState.value = PresentationResult.ResultSuccess(false)
+                        show.value = it.data
+                    }
                 }
-                .toLiveData(show)
 
             getEpisodesUseCase.execute(showId)
-                .toPresentation(episodeMapper)
-                .toLiveData(episodes)
+                .mapToPresentation(episodeMapper)
+                .launchAndCollect(viewModelScope, episodes)
 
-            lookupShowUseCase.execute(showId)
-                .launchOn(error) {
-                    ExceptionPresentation(
-                        exception = it,
-                        errorMessage = R.string.error_internet
-                    )
+            viewModelScope.launch {
+                try {
+                    lookupShowUseCase.execute(showId)
+                } catch (e: Throwable) {
+                    error.value = ErrorPresentation(R.string.error_internet)
                 }
+            }
         } catch (e : Exception) {
             Timber.e(e)
-            fatalError.postValue(
-                ExceptionPresentation(
-                    exception = e,
-                    errorMessage = R.string.generic_fatal_error,
-                    errorArgs = listOf(e.message)
+            fatalError.value =
+                ErrorPresentation(
+                    message = R.string.generic_fatal_error,
+                    args = listOf(e.message)
                 )
-            )
         }
     }
 
     fun selectSeason(season : Int) {
-        if(selectedSeason != season){
-            show.value?.firstOrNull()?.seasonsIds.orEmpty().ifNotEmpty { seasonsIds ->
+        if (selectedSeason != season){
+            show.value.firstOrNull()?.seasonsIds.orEmpty().ifNotEmpty { seasonsIds ->
                 selectedSeason = season
-                fetchEpisodesUseCase.execute(showId, seasonsIds[season - 1])
-                    .launchOn(error) {
-                        ExceptionPresentation(
-                            exception = it,
-                            errorMessage = R.string.error_internet
-                        )
+                viewModelScope.launch {
+                    try {
+                        fetchEpisodesUseCase.execute(showId, seasonsIds[season - 1])
+                    } catch (e: Throwable) {
+                        error.value = ErrorPresentation(R.string.error_internet)
                     }
+                }
             }
         }
     }
 
     fun favorite() {
-        val lastValue = favoriteState.value.orFalse()
+        val lastState = favoriteState.value
 
-        favoriteShowUseCase.execute(showId, lastValue)
-            .map { !lastValue }
-            .onErrorReturn { exception ->
-                Timber.e(exception)
-                error.postValue(ExceptionPresentation(
-                    exception = exception,
-                    errorMessage = R.string.generic_error,
-                    errorArgs = listOf(exception.message)
-                ))
-                lastValue
+        favoriteState.value = PresentationResult.ResultLoading()
+
+        viewModelScope.launch {
+            favoriteState.value = try {
+                val favorite = lastState.data?.let { !it }.orFalse()
+                favoriteShowUseCase.execute(showId, favorite)
+                PresentationResult.ResultSuccess(favorite)
+            } catch (e: Throwable) {
+                Timber.e(e)
+                error.value = ErrorPresentation(
+                    message = R.string.generic_error,
+                    args = listOf(e.message)
+                )
+                lastState
             }
-            .toLiveData(favoriteState)
+        }
+    }
+
+    companion object {
+        const val ARG_SHOW = "showId"
     }
 }

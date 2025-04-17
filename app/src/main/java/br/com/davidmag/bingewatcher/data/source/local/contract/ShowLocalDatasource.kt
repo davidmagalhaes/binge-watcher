@@ -2,12 +2,11 @@ package br.com.davidmag.bingewatcher.data.source.local.contract
 
 import androidx.paging.DataSource
 import br.com.davidmag.bingewatcher.domain.model.Show
-import io.reactivex.Flowable
-import io.reactivex.Maybe
+import kotlinx.coroutines.flow.Flow
 
 interface ShowLocalDatasource {
     fun get(query : String) : DataSource.Factory<Int, Show>
-    fun get(showId: Long) : Flowable<List<Show>>
-    fun append(shows : List<Show>) : Maybe<Any>
-    fun cache(shows : List<Show>) : Maybe<Any>
+    fun get(showId: Long) : Flow<List<Show>>
+    suspend fun append(shows : List<Show>)
+    suspend fun cache(shows : List<Show>)
 }

@@ -4,10 +4,21 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.MutableState
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
-import io.reactivex.Flowable
-import io.reactivex.Maybe
+import androidx.paging.PagingData
+import androidx.paging.map
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEmpty
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 inline fun <reified T: ViewModel> AppCompatActivity.initViewModel(crossinline factory: () -> T): T =
     _initViewModel(this, intent.extras, factory)
@@ -23,11 +34,11 @@ fun Context.getString(messageRes : Int?, vararg args : Any?) : String? {
     return messageRes?.let { getString(it, *args) }
 }
 
-fun Context.getString(wrapper : ExceptionPresentation) : String? {
+fun Context.getString(errorObj : ErrorPresentation) : String? {
     return getString(
-        wrapper.errorMessage,
-        *wrapper.errorArgs.toTypedArray()
-    ) ?: wrapper.exception.message
+        errorObj.message,
+        *errorObj.args.toTypedArray()
+    )
 }
 
 fun <T : Collection<*>> T.ifNotEmpty(block : (T) -> Unit) : T {
@@ -55,39 +66,101 @@ inline fun <reified T: ViewModel> _initViewModel(
     }).get(clazz)
 }
 
-@Suppress("UNCHECKED_CAST")
-fun Maybe<*>.submit(
-    mediator : MediatorLiveData<PresentationObject>,
-    mediatorFailure: MediatorLiveData<ExceptionPresentation>? = null,
-    exceptionHandler : (Throwable) -> ExceptionPresentation = { ExceptionPresentation(it) }
-) = PresentationUtils.submit(this as Maybe<Any>, mediator, mediatorFailure, exceptionHandler)
+//fun <Entity , Dto> Flowable<List<Entity>>.toPresentation(mapper : PresentationMapper<Entity, Dto>) : Flowable<List<Dto>> {
+//    return this.map(mapper.contentMapper).onErrorReturn { listOf(mapper.errorMapper(it)) }
+//}
+//
+//fun <Entity , Dto> Maybe<List<Entity>>.toPresentation(mapper : PresentationMapper<Entity, Dto>) : Maybe<List<Dto>> {
+//    return this.map(mapper.contentMapper).onErrorReturn { listOf(mapper.errorMapper(it)) }
+//}
 
-@Suppress("UNCHECKED_CAST")
-fun Maybe<*>.launchOn(
-    mediatorFailure: MediatorLiveData<ExceptionPresentation>,
-    exceptionHandler : (Throwable) -> ExceptionPresentation = { ExceptionPresentation(it) }
-) = PresentationUtils.launchOn(this as Maybe<Any>, mediatorFailure, exceptionHandler)
+@OptIn(ExperimentalCoroutinesApi::class)
+fun <Entity, Dto> Flow<List<Entity>>.mapToPresentation(mapper : PresentationMapper<Entity, Dto>): Flow<PresentationResult<List<Dto>>> {
+    val originalFlow = this
 
-fun <Entity , Dto: PresentationObject> Flowable<List<Entity>>.toPresentation(mapper : PresentationMapper<Entity, Dto>) : Flowable<List<Dto>> {
-    return this.map(mapper.contentMapper).onErrorReturn { listOf(mapper.errorMapper(it)) }
+    return flow {
+        val resultFlow = this
+        emit(PresentationResult.ResultLoading())
+        flatMapConcat {
+            originalFlow
+                .map { resultFlow.emit(PresentationResult.ResultSuccess(mapper.contentMapper(it))) }
+                .catch { resultFlow.emit(PresentationResult.ResultError(it, listOf(mapper.errorMapper(it)))) }
+                .onEmpty { resultFlow.emit(PresentationResult.ResultEmpty()) }
+        }
+    }
 }
 
-fun <Entity , Dto: PresentationObject> Maybe<List<Entity>>.toPresentation(mapper : PresentationMapper<Entity, Dto>) : Maybe<List<Dto>> {
-    return this.map(mapper.contentMapper).onErrorReturn { listOf(mapper.errorMapper(it)) }
+fun <Entity: Any, Dto: Any> Flow<PagingData<Entity>>.toPresentationPage(
+    mapper : PresentationMapper<Entity, Dto>
+): Flow<PagingData<Dto>> {
+    return map { flow ->
+        flow.map { mapper.parse(it).first() }
+    }
 }
 
-@Suppress("UNCHECKED_CAST")
-fun <T> Maybe<T>.toLiveData(mediator : MediatorLiveData<T>? = null) : LiveData<out T> {
-    return PresentationUtils.toLiveData(this, mediator)
+@OptIn(ExperimentalCoroutinesApi::class)
+fun <T> Flow<T>.mapToResult(): Flow<PresentationResult<T>> {
+    val originalFlow = this
+    return flow {
+        val resultFlow = this
+        emit(PresentationResult.ResultLoading())
+        flatMapConcat {
+            originalFlow
+                .map { resultFlow.emit(PresentationResult.ResultSuccess(it)) }
+                .catch { resultFlow.emit(PresentationResult.ResultError(it)) }
+                .onEmpty { resultFlow.emit(PresentationResult.ResultEmpty()) }
+        }
+    }
 }
 
-@Suppress("UNCHECKED_CAST")
-fun <T> Flowable<T>.toLiveData(mediator : MediatorLiveData<T>? = null) : LiveData<out T> {
-    return PresentationUtils.toLiveData(this, mediator)
+fun <T> Flow<T>.launchAndCollect(scope: CoroutineScope, block: ((T) -> Unit)? = null) {
+    scope.launch {
+        collect { block?.invoke(it) }
+    }
 }
 
+fun <T> Flow<T>.launchAndCollect(
+    scope: CoroutineScope,
+    success: MutableState<T>,
+    error: MutableState<Throwable>? = null
+) {
+    scope.launch {
+        val flow = error?.let { catch {
+            Timber.e(it)
+            error.value = it
+        } } ?: this@launchAndCollect
+        flow.collect { success.value = it }
+    }
+}
 
+fun <T> Flow<PresentationResult<T>>.launchAndCollect(
+    scope: CoroutineScope,
+    state: MutableState<PresentationResult<T>>
+) {
+    scope.launch {
+        collect { state.value = it }
+    }
+}
 
-
-
+fun <T> Flow<PresentationResult<T>>.launchAndCollect(
+    scope: CoroutineScope,
+    success: MutableState<T>? = null,
+    error: MutableState<Throwable>? = null,
+    empty: MutableState<Any>? = null,
+    loading: MutableState<Any>? = null
+) {
+    scope.launch {
+        collect {
+            when(it) {
+                is PresentationResult.ResultSuccess -> success?.value = it.data
+                is PresentationResult.ResultError -> {
+                    Timber.e(it.error)
+                    error?.value = it.error
+                }
+                is PresentationResult.ResultEmpty -> empty?.value = Any()
+                is PresentationResult.ResultLoading -> loading?.value = Any()
+            }
+        }
+    }
+}
 

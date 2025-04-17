@@ -5,18 +5,18 @@ import androidx.core.text.HtmlCompat
 import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.domain.model.Episode
 import br.com.davidmag.bingewatcher.presentation.common.PresentationMapper
-import br.com.davidmag.bingewatcher.presentation.common.PresentationObject
+import br.com.davidmag.bingewatcher.presentation.common.PresentationResult
 import br.com.davidmag.bingewatcher.presentation.model.EpisodePresentation
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
-class EpisodePresentationMapper(
+class EpisodePresentationMapper @Inject constructor(
 	private val resources: Resources
 ) : PresentationMapper<Episode, EpisodePresentation>() {
 	override val contentMapper: (List<Episode>) -> List<EpisodePresentation> = { episodes ->
 		episodes.map {
 			with(it){
 				EpisodePresentation(
-					viewType = PresentationObject.VIEWTYPE_CONTENT,
 					id = id,
 					name = name,
 					subtitle = resources.getString(
@@ -44,8 +44,6 @@ class EpisodePresentationMapper(
 	}
 
 	override val errorMapper: (Throwable) -> EpisodePresentation = {
-		EpisodePresentation(
-			viewType = PresentationObject.VIEWTYPE_ERROR,
-		)
+		EpisodePresentation()
 	}
 }

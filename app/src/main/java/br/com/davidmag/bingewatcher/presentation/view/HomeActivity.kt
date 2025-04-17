@@ -1,16 +1,15 @@
+/*
 package br.com.davidmag.bingewatcher.presentation.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import br.com.davidmag.bingewatcher.app.databinding.ActivityHomeBinding
 import br.com.davidmag.bingewatcher.presentation.adapter.ShowAdapter
 import br.com.davidmag.bingewatcher.presentation.common.decorator.VerticalSpaceItemDecoration
-import br.com.davidmag.bingewatcher.presentation.common.getString
 import br.com.davidmag.bingewatcher.presentation.common.initViewModel
 import br.com.davidmag.bingewatcher.presentation.common.longToast
 import br.com.davidmag.bingewatcher.presentation.di.presentationComponent
@@ -120,4 +119,4 @@ class HomeActivity : AppCompatActivity() {
 			}
 		}
 	}
-}
+}*/

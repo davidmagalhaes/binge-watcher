@@ -1,3 +1,4 @@
+/*
 package br.com.davidmag.bingewatcher.presentation.view
 
 import android.annotation.SuppressLint
@@ -150,4 +151,4 @@ class ShowActivity : AppCompatActivity() {
 			}
 		}
 	}
-}
+}*/

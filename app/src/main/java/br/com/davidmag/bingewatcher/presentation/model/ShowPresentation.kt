@@ -1,11 +1,10 @@
 package br.com.davidmag.bingewatcher.presentation.model
 
 import android.text.Spanned
-import br.com.davidmag.bingewatcher.presentation.common.PresentationObject
+import br.com.davidmag.bingewatcher.presentation.common.PresentationResult
 import java.util.Collections.emptyList
 
 data class ShowPresentation(
-    override val viewType: Int,
     val id : Long,
     val name : String? = null,
     val time : String? = null,
@@ -22,4 +21,4 @@ data class ShowPresentation(
     val favored : Boolean = false,
     val seasonsTitles : List<String> = emptyList(),
     val seasonsIds : List<Long> = emptyList()
-) : PresentationObject
+)

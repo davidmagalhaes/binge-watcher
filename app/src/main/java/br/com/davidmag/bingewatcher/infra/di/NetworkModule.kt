@@ -6,16 +6,15 @@ import br.com.davidmag.bingewatcher.data.source.remote.api.ShowApi
 import br.com.davidmag.bingewatcher.data.util.GsonDateTimeTypeAdapter
 import br.com.davidmag.bingewatcher.data.util.GsonSimpleDateTypeAdapter
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
-import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
-import io.reactivex.schedulers.Schedulers
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -23,6 +22,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 class NetworkModule {
 
     private val okHttpClient by lazy {
@@ -34,9 +34,6 @@ class NetworkModule {
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
-            .let {
-                if (BuildConfig.DEBUG) it.addNetworkInterceptor(StethoInterceptor()) else it
-            }
             .build()
     }
 
@@ -52,7 +49,6 @@ class NetworkModule {
             .baseUrl(BuildConfig.BASE_API_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .build()
     }
 

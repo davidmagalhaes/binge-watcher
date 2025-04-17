@@ -1,3 +1,4 @@
+/*
 package br.com.davidmag.bingewatcher.presentation.view
 
 import android.os.Bundle
@@ -72,4 +73,4 @@ class EpisodeActivity : AppCompatActivity() {
 			}
 		}
 	}
-}
+}*/

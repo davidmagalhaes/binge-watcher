@@ -2,13 +2,12 @@ package br.com.davidmag.bingewatcher.domain.usecase
 
 import br.com.davidmag.bingewatcher.domain.model.Episode
 import br.com.davidmag.bingewatcher.domain.repository.EpisodeRepository
-import io.reactivex.Flowable
-import io.reactivex.Maybe
+import kotlinx.coroutines.flow.Flow
 
 class FetchEpisodesUseCase(
     private val episodeRepository: EpisodeRepository
 ) {
-    fun execute(showId : Long, season : Long) : Maybe<Any> {
+    suspend fun execute(showId : Long, season : Long)  {
         return episodeRepository.fetch(showId, season)
     }
 }
@@ -16,7 +15,7 @@ class FetchEpisodesUseCase(
 class GetEpisodesUseCase(
     private val episodeRepository: EpisodeRepository
 ) {
-    fun execute(showId : Long) : Flowable<List<Episode>> {
+    fun execute(showId : Long) : Flow<List<Episode>> {
         return episodeRepository.get(showId)
     }
 }

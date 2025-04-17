@@ -1,11 +1,10 @@
 package br.com.davidmag.bingewatcher.data.source.local.contract
 
 import br.com.davidmag.bingewatcher.domain.model.Genre
-import io.reactivex.Flowable
-import io.reactivex.Maybe
+import kotlinx.coroutines.flow.Flow
 
 interface GenreLocalDatasource {
-    fun get(): Flowable<List<Genre>>
-    fun append(genres: List<Genre>): Maybe<Any>
-    fun cache(genres: List<Genre>): Maybe<Any>
+    fun get(): Flow<List<Genre>>
+    suspend fun append(genres: List<Genre>)
+    suspend fun cache(genres: List<Genre>)
 }

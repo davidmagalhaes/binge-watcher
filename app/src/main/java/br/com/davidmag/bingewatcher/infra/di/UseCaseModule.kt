@@ -6,9 +6,13 @@ import br.com.davidmag.bingewatcher.domain.repository.ShowRepository
 import br.com.davidmag.bingewatcher.domain.usecase.*
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import dagger.hilt.migration.DisableInstallInCheck
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 class UseCaseModule {
     @Singleton
     @Provides

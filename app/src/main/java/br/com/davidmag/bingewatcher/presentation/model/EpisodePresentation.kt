@@ -4,10 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.text.Spanned
 import androidx.core.text.HtmlCompat
-import br.com.davidmag.bingewatcher.presentation.common.PresentationObject
+import br.com.davidmag.bingewatcher.presentation.common.PresentationResult
 
 data class EpisodePresentation (
-	override val viewType: Int,
 	val id : Long? = null,
 	val name : String? = null,
 	val subtitle : String? = null,
@@ -17,9 +16,8 @@ data class EpisodePresentation (
 	val imageMediumUrl : String? = null,
 	val imageOriginalUrl : String? = null,
 	val seasonTitle : String? = null
-) : PresentationObject, Parcelable {
+): Parcelable {
 	constructor(parcel: Parcel) : this(
-		parcel.readInt(),
 		parcel.readValue(Long::class.java.classLoader) as? Long,
 		parcel.readString(),
 		parcel.readString(),
@@ -32,7 +30,6 @@ data class EpisodePresentation (
 	)
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
-		parcel.writeInt(viewType)
 		parcel.writeValue(id)
 		parcel.writeString(name)
 		parcel.writeString(subtitle)

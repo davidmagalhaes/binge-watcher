@@ -24,8 +24,9 @@ object ShowRemoteMapper : EntityMapper<Show, ShowResponse> {
                 status = status,
                 ratingAvg = rating?.average ?: 0.0,
                 premiered = premiered,
-                imageBackgroundUrl = null,
-                seasonsIds = emptyList()
+                images = images ?: emptyList(),
+                imageBackgroundUrl = imageBackgroundUrl,
+                seasonsIds = seasonsIds ?: emptyList()
             )
         }
     }

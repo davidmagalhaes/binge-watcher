@@ -1,10 +1,10 @@
 package br.com.davidmag.bingewatcher.data.source.remote.contract
 
 import br.com.davidmag.bingewatcher.domain.model.Show
-import io.reactivex.Maybe
+import kotlinx.coroutines.flow.Flow
 
 interface ShowRemoteDatasource {
-    fun fetch(page : Int) : Maybe<List<Show>>
-    fun lookup(showId : Long) : Maybe<List<Show>>
-    fun search(query : String, page: Int) : Maybe<List<Show>>
+    suspend fun fetch(page : Int) : List<Show>
+    suspend fun lookup(showId : Long) : Show
+    suspend fun search(query : String, page: Int) : List<Show>
 }

@@ -9,5 +9,8 @@ data class EpisodeResponse (
     val number : Int,
     val summary : String?,
     val image : Posters?,
-    val premiered : LocalDate?
+    val premiered : LocalDate?,
+
+    @Transient
+    var showId: Long
 )

@@ -4,7 +4,7 @@ import br.com.davidmag.bingewatcher.data.source.remote.dto.SearchResponse
 import br.com.davidmag.bingewatcher.data.source.remote.dto.SeasonResponse
 import br.com.davidmag.bingewatcher.data.source.remote.dto.ShowImageDto
 import br.com.davidmag.bingewatcher.data.source.remote.dto.ShowResponse
-import io.reactivex.Maybe
+import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -12,20 +12,20 @@ import retrofit2.http.Query
 interface ShowApi {
 
     @GET("shows")
-    fun fetch(@Query("page") page: Int) : Maybe<@JvmSuppressWildcards List<ShowResponse>>
+    suspend fun fetch(@Query("page") page: Int) : List<ShowResponse>
 
     @GET("shows/{id}")
-    fun lookup(@Path("id") showId : Long) : Maybe<@JvmSuppressWildcards ShowResponse>
+    suspend fun lookup(@Path("id") showId : Long) : ShowResponse
 
     @GET("search/shows")
-    fun search(
+    suspend fun search(
         @Query("q") query : String,
         @Query("page") page: Int
-    ) : Maybe<@JvmSuppressWildcards List<SearchResponse>>
+    ) : List<SearchResponse>
 
     @GET("shows/{id}/seasons")
-    fun seasons(@Path("id") showId : Long) : Maybe<@JvmSuppressWildcards List<SeasonResponse>>
+    suspend fun seasons(@Path("id") showId : Long) : List<SeasonResponse>
 
     @GET("shows/{id}/images")
-    fun fetchImages(@Path("id") showId : Long) : Maybe<@JvmSuppressWildcards List<ShowImageDto>>
+    suspend fun fetchImages(@Path("id") showId : Long) : List<ShowImageDto>
 }

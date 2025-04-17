@@ -1,29 +1,34 @@
 package br.com.davidmag.bingewatcher.data.repository
 
-import br.com.davidmag.bingewatcher.data.scheduler.AppSchedulers
+import br.com.davidmag.bingewatcher.data.scheduler.AppDispatchers
 import br.com.davidmag.bingewatcher.data.source.local.contract.EpisodeLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.remote.contract.EpisodeRemoteDatasource
 import br.com.davidmag.bingewatcher.domain.model.Episode
 import br.com.davidmag.bingewatcher.domain.repository.EpisodeRepository
-import io.reactivex.Flowable
-import io.reactivex.Maybe
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EpisodeRepositoryImpl(
-    private val appSchedulers: AppSchedulers,
+    private val appDispatchers: AppDispatchers,
     private val episodeRemoteDatasource: EpisodeRemoteDatasource,
     private val episodeLocalDatasource : EpisodeLocalDatasource
 ) : EpisodeRepository {
-    override fun get(showId: Long): Flowable<List<Episode>> {
+
+    override fun get(showId: Long): Flow<List<Episode>> {
         return episodeLocalDatasource.get(showId)
-            .subscribeOn(appSchedulers.network())
+            .flowOn(appDispatchers.network())
     }
 
-    override fun fetch(showId: Long, seasonId : Long): Maybe<Any> {
-        return episodeRemoteDatasource.fetch(showId, seasonId)
-            .subscribeOn(appSchedulers.network())
-            .flatMap {
-                episodeLocalDatasource.cache(it)
-                    .subscribeOn(appSchedulers.database())
+    override suspend fun fetch(showId: Long, seasonId : Long) {
+        CoroutineScope(appDispatchers.network()).launch {
+            val episodes = episodeRemoteDatasource.fetch(showId, seasonId)
+
+            withContext(appDispatchers.database()) {
+                episodeLocalDatasource.cache(episodes)
             }
+        }.join()
     }
 }

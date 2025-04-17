@@ -1,19 +1,18 @@
 package br.com.davidmag.bingewatcher
 
-
 import android.content.Context
 import br.com.davidmag.bingewatcher.presentation.di.presentationComponent
 import com.bumptech.glide.annotation.GlideModule
-import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Registry
+import com.bumptech.glide.module.AppGlideModule
 import java.io.InputStream
 import javax.inject.Inject
 
 @GlideModule
-class AppGlideModule : AppGlideModule(){
+class AppGlideModule: AppGlideModule() {
 
     @Inject
     lateinit var factory : OkHttpUrlLoader.Factory

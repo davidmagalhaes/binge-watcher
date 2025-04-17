@@ -2,15 +2,18 @@ package br.com.davidmag.bingewatcher.infra.di
 
 import android.app.Application
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import br.com.davidmag.bingewatcher.data.scheduler.AppSchedulers
-import br.com.davidmag.bingewatcher.data.scheduler.AppSchedulersImpl
+import br.com.davidmag.bingewatcher.data.scheduler.AppDispatchers
+import br.com.davidmag.bingewatcher.data.scheduler.AppDispatchersImpl
 import br.com.davidmag.bingewatcher.data.source.local.LocalDatabase
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import dagger.hilt.migration.DisableInstallInCheck
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 class PersistenceModule {
 
     @Singleton
@@ -28,7 +31,7 @@ class PersistenceModule {
 
     @Provides
     fun provideAppSchedulers() =
-        AppSchedulersImpl as AppSchedulers
+        AppDispatchersImpl as AppDispatchers
 
     @Provides
     fun provideShowDao(

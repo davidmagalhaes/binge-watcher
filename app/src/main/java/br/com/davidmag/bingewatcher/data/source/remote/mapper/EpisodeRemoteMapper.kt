@@ -19,7 +19,8 @@ object EpisodeRemoteMapper : EntityMapper<Episode, EpisodeResponse> {
                 imageOriginalUrl = image?.original?.replace("http://", "https://"),
                 imageMediumUrl = image?.medium?.replace("http://", "https://"),
                 number = number,
-                season = season
+                season = season,
+                showId = showId
             )
         }
     }

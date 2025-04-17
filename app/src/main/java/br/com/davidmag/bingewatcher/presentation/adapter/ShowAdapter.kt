@@ -1,3 +1,4 @@
+/*
 package br.com.davidmag.bingewatcher.presentation.adapter
 
 import android.content.Context
@@ -83,4 +84,4 @@ class ShowViewHolder(
             )
         }
     }
-}
+}*/

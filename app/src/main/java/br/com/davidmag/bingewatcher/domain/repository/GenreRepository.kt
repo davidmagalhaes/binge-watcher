@@ -1,8 +1,8 @@
 package br.com.davidmag.bingewatcher.domain.repository
 
 import br.com.davidmag.bingewatcher.domain.model.Genre
-import io.reactivex.Flowable
+import kotlinx.coroutines.flow.Flow
 
 interface GenreRepository {
-    fun get() : Flowable<List<Genre>>
+    fun get() : Flow<List<Genre>>
 }

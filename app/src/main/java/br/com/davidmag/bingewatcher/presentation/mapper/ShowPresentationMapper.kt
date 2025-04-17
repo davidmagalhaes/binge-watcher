@@ -5,11 +5,12 @@ import androidx.core.text.HtmlCompat
 import br.com.davidmag.bingewatcher.app.R
 import br.com.davidmag.bingewatcher.domain.model.Show
 import br.com.davidmag.bingewatcher.presentation.common.PresentationMapper
-import br.com.davidmag.bingewatcher.presentation.common.PresentationObject
+import br.com.davidmag.bingewatcher.presentation.common.PresentationResult
 import br.com.davidmag.bingewatcher.presentation.model.ShowPresentation
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
-class ShowPresentationMapper(
+class ShowPresentationMapper @Inject constructor(
     private val resources: Resources
 ) : PresentationMapper<Show, ShowPresentation>() {
 
@@ -17,7 +18,6 @@ class ShowPresentationMapper(
         shows.map { show ->
             with(show) {
                 ShowPresentation(
-                    viewType = PresentationObject.VIEWTYPE_CONTENT,
                     id = id,
                     name = name,
                     time = time,
@@ -55,7 +55,6 @@ class ShowPresentationMapper(
 
     override val errorMapper: (Throwable) -> ShowPresentation = {
         ShowPresentation(
-            viewType = PresentationObject.VIEWTYPE_ERROR,
             id = -1
         )
     }

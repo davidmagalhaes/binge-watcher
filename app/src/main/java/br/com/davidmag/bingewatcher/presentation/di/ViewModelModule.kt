@@ -8,8 +8,11 @@ import br.com.davidmag.bingewatcher.presentation.viewmodel.HomeViewModel
 import br.com.davidmag.bingewatcher.presentation.viewmodel.ShowViewModel
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
 @Module
+@InstallIn(SingletonComponent::class)
 class ViewModelModule {
     @Provides
     fun provideHomeViewModel(

@@ -9,8 +9,9 @@ The app is available on [Play Store](https://play.google.com/store/apps/details?
 
 - MVVM
 - Clean Architecture
-- RxJava2
-- LiveData
+- Coroutines
+- Kotlin Flow
+- Jetpack Compose
 - Kotlin
 - Retrofit
 - Room

@@ -7,8 +7,8 @@ import br.com.davidmag.bingewatcher.data.source.local.mapper.GenreLocalMapper
 import br.com.davidmag.bingewatcher.data.source.local.mapper.ShowLocalMapper
 import br.com.davidmag.bingewatcher.data.source.local.mapper.ShowWithJoinsMapper
 import br.com.davidmag.bingewatcher.domain.model.Show
-import io.reactivex.Flowable
-import io.reactivex.Maybe
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class ShowLocalDatasourceImpl(
     private val showDao: ShowDao
@@ -19,31 +19,29 @@ class ShowLocalDatasourceImpl(
         }
     }
 
-    override fun get(showId: Long): Flowable<List<Show>> {
+    override fun get(showId: Long): Flow<List<Show>> {
         return showDao.get(showId).map {
             ShowWithJoinsMapper.toEntity(it)
         }
     }
 
-    override fun append(shows: List<Show>): Maybe<Any> {
-        return Maybe.fromCallable {
-            showDao.append(shows.map {
-                Pair(
-                    ShowLocalMapper.toDto(it),
-                    GenreLocalMapper.toDto(it.genres)
-                )
-            })
-        }
+    override suspend fun append(shows: List<Show>) {
+        showDao.append(shows.map {
+            Pair(
+                ShowLocalMapper.toDto(it),
+                GenreLocalMapper.toDto(it.genres)
+            )
+        })
     }
 
-    override fun cache(shows: List<Show>): Maybe<Any> {
-        return Maybe.fromCallable {
-            showDao.cache(shows.map {
+    override suspend fun cache(shows: List<Show>) {
+        showDao.cache(
+            shows.map {
                 Pair(
                     ShowLocalMapper.toDto(it),
                     GenreLocalMapper.toDto(it.genres)
                 )
-            })
-        }
+            }
+        )
     }
 }

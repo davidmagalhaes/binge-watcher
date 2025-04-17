@@ -4,7 +4,7 @@ import java.time.LocalDate
 
 data class Episode (
     val id : Long,
-    var showId : Long = 0,
+    val showId : Long = 0,
     val name : String,
     val season : Int,
     val number : Int,

@@ -5,16 +5,18 @@ import br.com.davidmag.bingewatcher.presentation.mapper.EpisodePresentationMappe
 import br.com.davidmag.bingewatcher.presentation.mapper.ShowPresentationMapper
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
 
 @Module
+@InstallIn(ViewModelComponent::class)
 class PresentationMapperModule {
-    @PresentationScope
     @Provides
     fun provideShowPresentationMapper(
         application: Application
     ) = ShowPresentationMapper(application.resources)
 
-    @PresentationScope
     @Provides
     fun provideEpisodePresentationMapper(
         application: Application

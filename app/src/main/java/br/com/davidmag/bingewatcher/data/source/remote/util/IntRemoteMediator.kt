@@ -10,7 +10,7 @@ import timber.log.Timber
 @ExperimentalPagingApi
 class IntRemoteMediator(
     private val firstPage : Int = 1,
-    private val loadItems : suspend (Int) -> MediatorResult
+    private val loadItems : suspend (Int) -> Boolean
 ) : RemoteMediator<Int, Show>() {
 
     private var currentPage = firstPage
@@ -43,7 +43,11 @@ class IntRemoteMediator(
                 }
             }
 
-            return loadItems(nextPage)
+            val hasNextPage = loadItems(nextPage)
+
+            return MediatorResult.Success(
+                endOfPaginationReached = !hasNextPage
+            )
         }
         catch (e : Exception){
             Timber.e(e)

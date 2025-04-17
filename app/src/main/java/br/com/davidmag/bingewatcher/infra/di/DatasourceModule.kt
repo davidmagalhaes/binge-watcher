@@ -1,5 +1,6 @@
 package br.com.davidmag.bingewatcher.infra.di
 
+import br.com.davidmag.bingewatcher.data.scheduler.AppDispatchers
 import br.com.davidmag.bingewatcher.data.source.local.contract.EpisodeLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.local.contract.FavoredShowLocalDatasource
 import br.com.davidmag.bingewatcher.data.source.local.contract.GenreLocalDatasource
@@ -20,9 +21,13 @@ import br.com.davidmag.bingewatcher.data.source.remote.impl.EpisodeRemoteDatasou
 import br.com.davidmag.bingewatcher.data.source.remote.impl.ShowRemoteDatasourceImpl
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import dagger.hilt.migration.DisableInstallInCheck
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 class DatasourceModule {
     @Singleton
     @Provides
@@ -41,9 +46,10 @@ class DatasourceModule {
     @Singleton
     @Provides
     fun provideShowRemoteDatasource(
+        appDispatchers: AppDispatchers,
         showApi: ShowApi
     ) : ShowRemoteDatasource =
-        ShowRemoteDatasourceImpl(showApi)
+        ShowRemoteDatasourceImpl(appDispatchers, showApi)
 
     @Singleton
     @Provides

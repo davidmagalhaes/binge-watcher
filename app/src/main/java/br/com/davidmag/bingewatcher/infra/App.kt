@@ -5,9 +5,10 @@ import br.com.davidmag.bingewatcher.app.BuildConfig
 import br.com.davidmag.bingewatcher.infra.di.ApplicationComponent
 import br.com.davidmag.bingewatcher.infra.di.DaggerApplicationComponent
 import com.facebook.stetho.Stetho
-import io.reactivex.plugins.RxJavaPlugins
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
+@HiltAndroidApp
 class App  : Application() {
 
     companion object  {
@@ -24,10 +25,6 @@ class App  : Application() {
                     .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
                     .build()
             )
-        }
-
-        RxJavaPlugins.setErrorHandler {
-            Timber.e(it, "RxJava error handled on Global Handler!")
         }
 
         applicationComponent = DaggerApplicationComponent.builder()
